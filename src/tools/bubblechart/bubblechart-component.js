@@ -358,6 +358,7 @@ var BubbleChartComp = Component.extend({
     this.bubbleContainer = this.graph.select('.vzb-bc-bubbles');
     this.labelsContainer = this.graph.select('.vzb-bc-labels');
     this.linesContainer = this.graph.select('.vzb-bc-lines');
+    this.printTextContainer = this.graph.select('.vzb-bc-print-text');
     this.zoomRect = this.element.select('.vzb-bc-zoom-rect');
     this.eventArea = this.element.select('.vzb-bc-eventarea');
 
@@ -662,6 +663,27 @@ var BubbleChartComp = Component.extend({
 
     //TODO: no need to create trail group for all entities
     //TODO: instead of :append an :insert should be used to keep order, thus only few trail groups can be inserted
+
+    this.entityPrintText = this.printTextContainer.selectAll('.vzb-bc-entity')
+      .data(this.model.entities.getVisible(), function(d) {
+        return d[KEY]
+      });
+
+    this.entityPrintText.exit().remove();
+
+    this.entityPrintText
+      .enter()
+      .append("g")
+      .attr("class", "vzb-bc-entity")
+      .each(function(d, index) {
+        var view = d3.select(this);
+        var text = _this.model.marker.label.getValue(d);
+
+        view.append("text")
+          .attr("class", "vzb-bc-label-content")
+          .text(text);
+      });
+
     this.entityTrails = this.bubbleContainer.selectAll(".vzb-bc-entity")
       .data(getKeys.call(this, "trail-"), function(d) {
         return d[KEY];
@@ -1082,6 +1104,12 @@ var BubbleChartComp = Component.extend({
 
     }); // each bubble
 
+    this.entityPrintText.each(function(d, index) {
+      var view = d3.select(this);
+      _this._updateTextLabel(d, values, view);
+
+    }); // each textLabel
+
     // Call flush() after any zero-duration transitions to synchronously flush the timer queue
     // and thus make transition instantaneous. See https://github.com/mbostock/d3/issues/1951
     if(_this.duration == 0) d3.timer.flush();
@@ -1157,6 +1185,23 @@ var BubbleChartComp = Component.extend({
     } // data exists
   },
 
+  _updateTextLabel: function(d, values, view) {
+    var _this = this;
+    var TIMEDIM = this.TIMEDIM;
+    var KEY = this.KEY;
+    var valueS = values.size[d[KEY]];
+    var scaledS = utils.areaToRadius(_this.sScale(valueS));
+    var scaledSFull = Math.min(Math.max(parseInt(scaledS*2), 10), 30);
+    var pointer = {};
+    pointer[KEY] = d[KEY];
+    pointer[TIMEDIM] = _this.time;
+    var x = _this.xScale(_this.model.marker.axis_x.getValue(pointer));
+    var y = _this.yScale(_this.model.marker.axis_y.getValue(pointer));
+    var offset = utils.areaToRadius(_this.sScale(_this.model.marker.size.getValue(pointer)));
+    var pos = _this._setPos(x, y, offset);
+    view.style("font-size", scaledSFull)
+      .attr("transform", "translate(" + (pos[0]) + "," + (pos[1] ) + ")");
+  },
 
   _updateLabel: function(d, index, valueX, valueY, scaledS, valueL, duration) {
     var _this = this;
@@ -1447,21 +1492,47 @@ var BubbleChartComp = Component.extend({
 
   },
 
+  _setPos: function(x, y, offset){
+    var xPos, yPos, xSign = -1,
+      ySign = -1,
+      xOffset = 0,
+      yOffset = 0;
+
+    if(offset) {
+      xOffset = offset * .71; // .71 - sin and cos for 315
+      yOffset = offset * .71;
+    }
+
+    var contentBBox = this.tooltip.select('text')[0][0].getBBox();
+    if(x - xOffset - contentBBox.width < 0) {
+      xSign = 1;
+      x += contentBBox.width + 5; // corrective to the block Radius and text padding
+    } else {
+      x -= 5; // corrective to the block Radius and text padding
+    }
+    if(y - yOffset - contentBBox.height < 0) {
+      ySign = 1;
+      y += contentBBox.height;
+    } else {
+      y -= 11; // corrective to the block Radius and text padding
+    }
+    if(offset) {
+      xPos = x + xOffset * xSign;
+      yPos = y + yOffset * ySign; // 5 and 11 - corrective to the block Radius and text padding
+    } else {
+      xPos = x + xOffset * xSign; // .71 - sin and cos for 315
+      yPos = y + yOffset * ySign; // 5 and 11 - corrective to the block Radius and text padding
+    }
+    return [xPos, yPos]
+  },
+
 
   _setTooltip: function(tooltipText, x, y, offset) {
     if(tooltipText) {
       var mouse = d3.mouse(this.graph.node()).map(function(d) {
         return parseInt(d)
       });
-      var xPos, yPos, xSign = -1,
-        ySign = -1,
-        xOffset = 0,
-        yOffset = 0;
-
-      if(offset) {
-        xOffset = offset * .71; // .71 - sin and cos for 315
-        yOffset = offset * .71;
-      }
+      var pos = this._setPos(x, y, offset);
       //position tooltip
       this.tooltip.classed("vzb-hidden", false)
         //.attr("style", "left:" + (mouse[0] + 50) + "px;top:" + (mouse[1] + 50) + "px")
@@ -1469,27 +1540,9 @@ var BubbleChartComp = Component.extend({
         .text(tooltipText);
 
       var contentBBox = this.tooltip.select('text')[0][0].getBBox();
-      if(x - xOffset - contentBBox.width < 0) {
-        xSign = 1;
-        x += contentBBox.width + 5; // corrective to the block Radius and text padding
-      } else {
-        x -= 5; // corrective to the block Radius and text padding
-      }
-      if(y - yOffset - contentBBox.height < 0) {
-        ySign = 1;
-        y += contentBBox.height;
-      } else {
-        y -= 11; // corrective to the block Radius and text padding
-      }
-      if(offset) {
-        xPos = x + xOffset * xSign;
-        yPos = y + yOffset * ySign; // 5 and 11 - corrective to the block Radius and text padding
-      } else {
-        xPos = x + xOffset * xSign; // .71 - sin and cos for 315
-        yPos = y + yOffset * ySign; // 5 and 11 - corrective to the block Radius and text padding
-      }
-      this.tooltip.attr("transform", "translate(" + (xPos ? xPos : mouse[0]) + "," + (yPos ? yPos : mouse[1]) +
-        ")")
+
+      this.tooltip.attr("transform", "translate(" + (pos[0] ? pos[0] : mouse[0]) + "," + (pos[1] ? pos[1] : mouse[1]) +
+      ")");
 
       this.tooltip.select('rect').attr("width", contentBBox.width + 8)
         .attr("height", contentBBox.height * 1.2)
