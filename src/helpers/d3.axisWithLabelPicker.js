@@ -107,8 +107,8 @@ export default function axisSmart() {
           rake
             .attr("x1", orient == VERTICAL ? 0 : d3.min(scale.range()) - options.bump - 1)
             .attr("x2", orient == VERTICAL ? 0 : d3.max(scale.range()) + options.bump)
-            .attr("y1", orient == HORIZONTAL ? 0 : d3.min(scale.range()) - options.bump)
-            .attr("y2", orient == HORIZONTAL ? 0 : d3.max(scale.range()) + options.bump)
+            .attr("y1", orient == HORIZONTAL ? (options.graphType ? options.xAxisHeight: 0) : d3.min(scale.range()) - options.bump)
+            .attr("y2", orient == HORIZONTAL ? (options.graphType ? options.xAxisHeight: 0) : d3.max(scale.range()) + options.bump)
       }
 
     };
@@ -119,6 +119,7 @@ export default function axisSmart() {
 
       g.selectAll(".tick")
         .each(function(d, t) {
+          d3.select(this).select("line").attr('y1', orient == HORIZONTAL ? (options.xAxisHeight? options.xAxisHeight : 0) : 0);
           d3.select(this).select("text")
             .transition()
             .duration(highlightTransDuration)
@@ -126,6 +127,14 @@ export default function axisSmart() {
             .style("opacity", highlightValue == "none" ? 1 : Math.min(1, Math.pow(
               Math.abs(axis.scale()(d) - axis.scale()(highlightValue)) /
               (axis.scale().range()[1] - axis.scale().range()[0]) * 5, 2)))
+          //d3.select(this).append('line')
+          d3.select(this).append("line")
+            .attr("x1", orient == VERTICAL ? 0 : 0)
+            .attr("x2", orient == VERTICAL ? (options.yAxisWidth? options.yAxisWidth : 0) : 0)
+            .attr("y1", orient == HORIZONTAL ? 0 : 0)
+            .attr("y2", orient == HORIZONTAL ? (options.xAxisHeight? options.xAxisHeight : 0) : 0)
+            .style("stroke-dasharray", "2 2")
+            .style("stroke", "#999");
         })
 
 

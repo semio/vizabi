@@ -898,16 +898,19 @@ var BubbleChartComp = Component.extend({
         scaleType: this.model.marker.axis_y.scaleType,
         toolMargin: margin,
         limitMaxTickNumber: 6,
+        yAxisWidth: this.width,
         bump: this.activeProfile.maxRadius
       });
 
     this.xAxis.scale(this.xScale)
       .orient("bottom")
-      .tickSize(6, 0)
+      .tickSize(this.height+6, 0)
       .tickSizeMinor(3, 0)
       .labelerOptions({
         scaleType: this.model.marker.axis_x.scaleType,
         toolMargin: margin,
+        graphType: 'bubble',
+        xAxisHeight: this.height,
         bump: this.activeProfile.maxRadius
       });
 
@@ -918,14 +921,14 @@ var BubbleChartComp = Component.extend({
 
     this.xAxisElContainer
       .attr("width", this.width + 1)
-      .attr("height", this.activeProfile.margin.bottom)
-      .attr("y", this.height - 1)
+      .attr("height", "100%")
+      .attr("y", 0)
       .attr("x", -1);
     this.xAxisEl
       .attr("transform", "translate(1,1)");
 
     this.yAxisElContainer
-      .attr("width", this.activeProfile.margin.left)
+      .attr("width", '100%')
       .attr("height", Math.max(0, this.height))
       .attr("x", -this.activeProfile.margin.left);
     this.yAxisEl
@@ -967,7 +970,7 @@ var BubbleChartComp = Component.extend({
     var yaxisWidth = this.yAxisElContainer.select("g").node().getBBox().width;
     this.yTitleEl
       .style("font-size", infoElHeight)
-      .attr("transform", "translate(" + (-yaxisWidth) + ", -" + this.activeProfile.yAxisLabelBottomMargin + ")");
+      .attr("transform", "translate(" + 0 + ", -" + this.activeProfile.yAxisLabelBottomMargin + ")");
 
     this.xTitleEl
       .style("font-size", infoElHeight)
