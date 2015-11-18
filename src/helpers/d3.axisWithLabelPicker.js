@@ -126,17 +126,13 @@ export default function axisSmart() {
             .ease("linear")
             .style("opacity", highlightValue == "none" ? 1 : Math.min(1, Math.pow(
               Math.abs(axis.scale()(d) - axis.scale()(highlightValue)) /
-              (axis.scale().range()[1] - axis.scale().range()[0]) * 5, 2)))
-          //d3.select(this).append('line')
-          d3.select(this).append("line")
-            .attr("x1", orient == VERTICAL ? 0 : 0)
+              (axis.scale().range()[1] - axis.scale().range()[0]) * 5, 2)));
+          d3.select(this).selectAll('line').data([1], function(d){return d;}).enter().append("line")
             .attr("x2", orient == VERTICAL ? (options.yAxisWidth? options.yAxisWidth : 0) : 0)
-            .attr("y1", orient == HORIZONTAL ? 0 : 0)
             .attr("y2", orient == HORIZONTAL ? (options.xAxisHeight? options.xAxisHeight : 0) : 0)
             .style("stroke-dasharray", "2 2")
             .style("stroke", "#999");
-        })
-
+        });
 
       g.select('.vzb-axis-value')
         .transition()

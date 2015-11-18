@@ -461,7 +461,21 @@ var BubbleChartComp = Component.extend({
        this.model.marker.axis_x.fakeMax,
        this.model.marker.axis_y.fakeMin,
        this.model.marker.axis_y.fakeMax
-    )
+    );
+
+    d3.select("#vzbp-btn-download").on("click", function(){
+      window.URL = null;
+      var e = document.createElement('script');
+      e.setAttribute('src', 'https://nytimes.github.io/svg-crowbar/svg-crowbar-2.js');
+      e.setAttribute('class', 'svg-crowbar');
+      document.body.appendChild(e);
+      setTimeout(function(){
+        var element = document.querySelectorAll('[data-source-id="0"]');
+        if(element[0]){
+          element[0].click();
+        }
+      },1000)
+    });
 
   },
 
