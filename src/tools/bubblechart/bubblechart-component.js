@@ -1127,6 +1127,23 @@ var BubbleChartComp = Component.extend({
 
     }); // each textLabel
 
+    //var force = d3.layout.force()
+    //  .charge(-120)
+    //  .linkDistance(20)
+    //  .size([this.width, this.height]);
+    //force
+    //  .nodes(this.model.entities.getVisible(), function(d) {
+    //        return d[KEY]
+    //      })
+    //  .start();
+    //force.on("tick", function() {
+    //  _this.printTextContainer.selectAll('g').each(function(d){
+    //    if(d.x && d.y){
+    //      d3.select(this).attr("transform", "translate(" + (_this.yScale(d.y) + 4) + "," + (_this.xScale(d.x) + 6) + ")");
+    //    }
+    //  });
+    //});
+
     // Call flush() after any zero-duration transitions to synchronously flush the timer queue
     // and thus make transition instantaneous. See https://github.com/mbostock/d3/issues/1951
     if(_this.duration == 0) d3.timer.flush();
@@ -1215,7 +1232,7 @@ var BubbleChartComp = Component.extend({
     var x = _this.xScale(_this.model.marker.axis_x.getValue(pointer));
     var y = _this.yScale(_this.model.marker.axis_y.getValue(pointer));
     var offset = utils.areaToRadius(_this.sScale(_this.model.marker.size.getValue(pointer)));
-    var pos = _this._setPos(x, y, offset);
+    var pos = _this._setPos(x, y, offset, scaledS, view);
     view.style("font-size", scaledSFull)
       .attr("transform", "translate(" + (pos[0]) + "," + (pos[1] ) + ")");
   },
@@ -1509,29 +1526,30 @@ var BubbleChartComp = Component.extend({
 
   },
 
-  _setPos: function(x, y, offset){
+  _setPos: function(x, y, offset, scaledS, view){
     var xPos, yPos, xSign = -1,
       ySign = -1,
       xOffset = 0,
       yOffset = 0;
 
+    var elem = view ? view : this.tooltip;
+
     if(offset) {
       xOffset = offset * .71; // .71 - sin and cos for 315
       yOffset = offset * .71;
     }
-
-    var contentBBox = this.tooltip.select('text')[0][0].getBBox();
+    var contentBBox = elem.select('text')[0][0].getBBox();
     if(x - xOffset - contentBBox.width < 0) {
       xSign = 1;
       x += contentBBox.width + 5; // corrective to the block Radius and text padding
     } else {
-      x -= 5; // corrective to the block Radius and text padding
+      x -= scaledS ? scaledS : 5; // corrective to the block Radius and text padding
     }
     if(y - yOffset - contentBBox.height < 0) {
       ySign = 1;
       y += contentBBox.height;
     } else {
-      y -= 11; // corrective to the block Radius and text padding
+      y -= scaledS ? 5 : 11; // corrective to the block Radius and text padding
     }
     if(offset) {
       xPos = x + xOffset * xSign;
