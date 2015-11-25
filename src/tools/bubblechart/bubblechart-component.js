@@ -680,6 +680,26 @@ var BubbleChartComp = Component.extend({
     //TODO: no need to create trail group for all entities
     //TODO: instead of :append an :insert should be used to keep order, thus only few trail groups can be inserted
 
+    this.entityPrintText = this.printTextContainer.selectAll('.vzb-bc-entity')
+      .data(this.model.entities.getVisible(), function(d) {
+        return d[KEY]
+      });
+
+    this.entityPrintText.exit().remove();
+
+    this.entityPrintText
+      .enter()
+      .append("g")
+      .attr("class", "vzb-bc-entity")
+      .each(function() {
+        var view = d3.select(this);
+        view.append("text")
+          .attr("class", "vzb-bc-label-content");
+        view.append("line")
+          .attr("stroke-width", 0.6)
+          .attr("stroke", "#666");
+      });
+
     this.entityTrails = this.bubbleContainer.selectAll(".vzb-bc-entity")
       .data(getKeys.call(this, "trail-"), function(d) {
         return d[KEY];
@@ -1105,8 +1125,6 @@ var BubbleChartComp = Component.extend({
 
     this.labelerCollision = labelerCollision();
 
-    this.entityPrintText = this.printTextContainer.selectAll('.vzb-bc-entity')
-      .data(label_array);
     this.sim_ann = this.labelerCollision
       .label(label_array)
       .anchor(anchor_array)
@@ -1114,22 +1132,6 @@ var BubbleChartComp = Component.extend({
       .height(this.height);
 
     this.sim_ann.start(1000);
-
-    this.entityPrintText.exit().remove();
-
-    this.entityPrintText
-      .enter()
-      .append("g")
-      .attr("class", "vzb-bc-entity")
-      .each(function() {
-        var view = d3.select(this);
-        view.append("text")
-          .attr("class", "vzb-bc-label-content");
-
-        view.append("line")
-          .attr("stroke-width", 0.6)
-          .attr("stroke", "gray");
-      });
 
     this.entityPrintText.each(function(d, index) {
       var view = d3.select(this);
@@ -1231,28 +1233,29 @@ var BubbleChartComp = Component.extend({
   },
 
   _updateTextLabel: function(d, values, view, anchor_array, label_array, index) {
-    var valueS = values.size[d.geo];
-    var valueY = values.axis_y[d.geo];
-    var valueX = values.axis_x[d.geo];
+    var valueS = values.size[label_array[index].geo];
+    var valueY = values.axis_y[label_array[index].geo];
+    var valueX = values.axis_x[label_array[index].geo];
     var scaledS = utils.areaToRadius(this.sScale(valueS));
     var scaledSFull = Math.min(Math.max(parseInt(scaledS*2), 10), 30);
     var pos = this._getLabelCoordinate(d.geo, scaledS, view);
+    var text = this.model.marker.label.getValue(d);
     view.select('text')
-      .text(d.name)
-      .attr('x', d.x)
-      .attr('y', d.y)
-      .style("font-size", d.scaledSFull);
+      .text(text)
+      .attr('x', label_array[index].x)
+      .attr('y', label_array[index].y)
+      .style("font-size", label_array[index].scaledSFull);
     view.select('line')
       .attr("x1", anchor_array[index].x)
-      .attr("x2", d.x)
+      .attr("x2", label_array[index].x)
       .attr("y1", anchor_array[index].y)
-      .attr("y2", d.y)
-      .style("display", function() { return ((anchor_array[index].x - d.x) + (anchor_array[index].y - d.y)) > 7 ? 'inherit': 'none'; });
+      .attr("y2", label_array[index].y)
+      .style("display", function() { return ((anchor_array[index].x - label_array[index].x) + (anchor_array[index].y - label_array[index].y)) > 7 ? 'inherit': 'none'; });
 
     var boxWidth = view.select('text')[0][0].getBBox().width;
     var boxHeight = view.select('text')[0][0].getBBox().height;
     anchor_array[index] = {x: this.xScale(valueX), y: this.yScale(valueY) - scaledS, r: scaledS};
-    label_array[index] = {x: pos[0], y: pos[1], name: d.name , width: boxWidth, height: boxHeight, scaledSFull: scaledSFull, geo: d.geo};
+    label_array[index] = {x: pos[0], y: pos[1], name: label_array[index].name , width: boxWidth, height: boxHeight, scaledSFull: scaledSFull, geo: label_array[index].geo};
   },
 
   _updateLabel: function(d, index, valueX, valueY, scaledS, valueL, duration) {
