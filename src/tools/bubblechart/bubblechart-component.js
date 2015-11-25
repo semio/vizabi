@@ -1123,13 +1123,26 @@ var BubbleChartComp = Component.extend({
       _this._updateBubble(d, values, valuesLocked, index, view, duration, anchor_array, label_array);
     }); // each bubble;
 
+    var new_energy_function = function(index, label_array, anchor_array) {
+      var ener = 0;
+      // insert user-defined interaction energies here
+      return ener;
+    };
+
+    var new_cooling_schedule = function(currT, initialT, nsweeps) {
+      // insert user-defined schedule here
+      return updatedT;
+    };
+
     this.labelerCollision = labelerCollision();
 
     this.sim_ann = this.labelerCollision
       .label(label_array)
       .anchor(anchor_array)
       .width(this.width)
-      .height(this.height);
+      .height(this.height)
+      .alt_energy(new_energy_function)
+      .alt_schedule(new_cooling_schedule);
 
     this.sim_ann.start(1000);
 
@@ -1212,7 +1225,7 @@ var BubbleChartComp = Component.extend({
       var scaledSFull = Math.min(Math.max(parseInt(scaledS*2), 10), 30);
       var width = view[0][0].getBBox().width;
       var height = view[0][0].getBBox().height;
-      anchor_array.push({x: _this.xScale(valueX), y: _this.yScale(valueY) - scaledS, r: scaledS});
+      anchor_array.push({x: _this.xScale(valueX), y: _this.yScale(valueY), r: scaledS});
       label_array.push({x: pos[0], y: pos[1], name: _this.model.marker.label.getValue(d) , width: width, height: height, scaledSFull: scaledSFull, geo: d[KEY]});
       _this._updateLabel(d, index, valueX, valueY, scaledS, valueL, duration);
 
@@ -1249,12 +1262,11 @@ var BubbleChartComp = Component.extend({
       .attr("x1", anchor_array[index].x)
       .attr("x2", label_array[index].x)
       .attr("y1", anchor_array[index].y)
-      .attr("y2", label_array[index].y)
-      .style("display", function() { return ((anchor_array[index].x - label_array[index].x) + (anchor_array[index].y - label_array[index].y)) > 7 ? 'inherit': 'none'; });
+      .attr("y2", label_array[index].y);
 
     var boxWidth = view.select('text')[0][0].getBBox().width;
     var boxHeight = view.select('text')[0][0].getBBox().height;
-    anchor_array[index] = {x: this.xScale(valueX), y: this.yScale(valueY) - scaledS, r: scaledS};
+    anchor_array[index] = {x: this.xScale(valueX), y: this.yScale(valueY), r: scaledS};
     label_array[index] = {x: pos[0], y: pos[1], name: label_array[index].name , width: boxWidth, height: boxHeight, scaledSFull: scaledSFull, geo: label_array[index].geo};
   },
 
