@@ -1,11 +1,11 @@
 /*!
- * VIZABI BUBBLEMAPCHART
+ * VIZABI BUBBLEMAP
  */
 
 import * as utils from 'base/utils';
 import Tool from 'base/tool';
 
-import BubbleMapChartComponent from './bubblemapchart-component';
+import BubbleMapComponent from './bubblemap-component';
 
 import {
   timeslider,
@@ -16,7 +16,7 @@ import {
 from 'components/_index';
 
 //BAR CHART TOOL
-var BubbleMapChart = Tool.extend('BubbleMapChart', {
+var BubbleMap = Tool.extend('BubbleMap', {
 
 
   /**
@@ -27,11 +27,11 @@ var BubbleMapChart = Tool.extend('BubbleMapChart', {
    */
   init: function(config, options) {
 
-    this.name = "bubblemapchart";
+    this.name = "bubblemap";
 
     //specifying components
     this.components = [{
-      component: BubbleMapChartComponent,
+      component: BubbleMapComponent,
       placeholder: '.vzb-tool-viz',
       model: ["state.time", "state.entities", "state.marker", "language", "ui"] //pass models to component
     }, {
@@ -42,7 +42,7 @@ var BubbleMapChart = Tool.extend('BubbleMapChart', {
       component: buttonlist,
       placeholder: '.vzb-tool-buttonlist',
       model: ['state', 'ui', 'language']
-    }/*, {
+    }, {
       component: treemenu,
       placeholder: '.vzb-tool-treemenu',
       model: ['state.marker', 'language']
@@ -50,7 +50,7 @@ var BubbleMapChart = Tool.extend('BubbleMapChart', {
       component: datawarning,
       placeholder: '.vzb-tool-datawarning',
       model: ['language']
-    }*/
+    }
     ];
 
     //constructor is the same as any tool
@@ -99,4 +99,4 @@ var BubbleMapChart = Tool.extend('BubbleMapChart', {
   }
 });
 
-export default BubbleMapChart;
+export default BubbleMap;

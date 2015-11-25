@@ -319,7 +319,7 @@ var MountainChartComponent = Component.extend({
 
         var profiles = {
           small: {
-            margin: { top: 10, right: 10, left: 10, bottom: 25 },
+            margin: { top: 10, right: 10, left: 10, bottom: 18 },
             infoElHeight: 16
           },
           medium: {
@@ -334,7 +334,7 @@ var MountainChartComponent = Component.extend({
 
         var presentationProfileChanges = {
           small: {
-            margin: { top: 10, right: 10, left: 10, bottom: 25 },
+            margin: { top: 10, right: 10, left: 10, bottom: 30 },
             infoElHeight: 16
           },
           medium: {
@@ -342,7 +342,7 @@ var MountainChartComponent = Component.extend({
             infoElHeight: 20
           },
           large: {
-            margin: { top: 30, right: 30, left: 30, bottom: 35 },
+            margin: { top: 30, right: 30, left: 30, bottom: 50 },
             infoElHeight: 22
           }
         };
@@ -387,6 +387,7 @@ var MountainChartComponent = Component.extend({
             .labelerOptions({
                 scaleType: scaleType,
                 toolMargin: margin,
+                pivotingLimit: margin.bottom * 1.5,
                 method: this.xAxis.METHOD_REPEATING,
                 stops: this._readyOnce ? this.model.time.xLogStops : [1]
             });
@@ -400,8 +401,9 @@ var MountainChartComponent = Component.extend({
             .attr("transform", "translate(" + this.width + "," + this.height + ")")
             .attr("dy", "-0.36em");
 
-        this.yTitleEl.select("text")
-            .attr("transform", "translate(0," + margin.top + ")")
+        this.yTitleEl
+          .style("font-size", infoElHeight)
+          .attr("transform", "translate(0," + margin.top + ")")
 
 
         var warnBB = this.dataWarningEl.select("text").node().getBBox();
@@ -417,15 +419,15 @@ var MountainChartComponent = Component.extend({
             .attr("dx", warnBB.height * 1.5);
 
         if(this.infoEl.select('svg').node()) {
-        var titleBBox = this.yTitleEl.node().getBBox();
-        var translate = d3.transform(this.yTitleEl.attr('transform')).translate;
+            var titleBBox = this.yTitleEl.node().getBBox();
+            var translate = d3.transform(this.yTitleEl.attr('transform')).translate;
 
-        this.infoEl.select('svg')
-            .attr("width", infoElHeight)
-            .attr("height", infoElHeight)
-        this.infoEl.attr('transform', 'translate('
-            + (titleBBox.x + translate[0] + titleBBox.width + infoElHeight * .4) + ','
-            + (titleBBox.y + translate[1] + infoElHeight * .3) + ')');
+            this.infoEl.select('svg')
+                .attr("width", infoElHeight)
+                .attr("height", infoElHeight)
+            this.infoEl.attr('transform', 'translate('
+                + (titleBBox.x + translate[0] + titleBBox.width + infoElHeight * .4) + ','
+                + (translate[1]-infoElHeight * .8) + ')');
         }
 
         this.eventAreaEl
@@ -472,9 +474,7 @@ var MountainChartComponent = Component.extend({
         this.dataWarningEl.append("text")
             .text(this.translator("hints/dataWarning"));
 
-        this.infoEl
-            .html(iconQuestion)
-            .select("svg").attr("width", "0px").attr("height", "0px");
+        utils.setIcon(this.infoEl, iconQuestion).select("svg").attr("width", "0px").attr("height", "0px");
 
         //TODO: move away from UI strings, maybe to ready or ready once
         this.infoEl.on("click", function () {
@@ -1084,7 +1084,7 @@ var MountainChartComponent = Component.extend({
             var translateY = (mouse[1] - contentBBox.height - 25) > 0 ? mouse[1] : (contentBBox.height + 25);
             this.tooltip
                 .attr("transform", "translate(" + translateX + "," + translateY + ")");
-            
+
         } else {
 
             this.tooltip.classed("vzb-hidden", true);
