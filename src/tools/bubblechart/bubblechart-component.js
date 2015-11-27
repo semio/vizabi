@@ -173,7 +173,7 @@ var BubbleChartComp = Component.extend({
       },
       'change:entities:opacityRegular': function() {
         _this.updateBubbleOpacity();
-        _this._trails.run("opacityHandler");        
+        _this._trails.run("opacityHandler");
       },
       'ready': function() {
         // if(_this.model.marker.color.scaleType === 'time') {
@@ -929,9 +929,14 @@ var BubbleChartComp = Component.extend({
     this.projectionX.attr("y1", _this.yScale.range()[0] + this.activeProfile.maxRadius);
     this.projectionY.attr("x2", _this.xScale.range()[0] - this.activeProfile.maxRadius);
 
+    setTimeout(function(){
+      _this.xAxisEl.selectAll('.vzb-bc-axis-grid').attr("y2", _this.height);
+      _this.yAxisEl.selectAll('.vzb-bc-axis-grid').attr("x2", _this.width);
+    },100);
+
     this.dataWarningEl.select("text").text(
       this.translator("hints/dataWarning" + (this.getLayoutProfile() === 'small' ? "-little" : ""))
-    )
+    );
     var dataWarningWidth = this.dataWarningEl.select("text").node().getBBox().width;
 
     var yTitleText = this.yTitleEl.select("text").text(this.strings.title.Y + this.strings.unit.Y);
@@ -1683,7 +1688,7 @@ var BubbleChartComp = Component.extend({
       }
     } else {
       this._axisProjections();
-      this._trails.run(["opacityHandler"]);      
+      this._trails.run(["opacityHandler"]);
     }
   },
 

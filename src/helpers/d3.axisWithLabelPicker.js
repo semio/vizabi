@@ -127,11 +127,10 @@ export default function axisSmart() {
             .style("opacity", highlightValue == "none" ? 1 : Math.min(1, Math.pow(
               Math.abs(axis.scale()(d) - axis.scale()(highlightValue)) /
               (axis.scale().range()[1] - axis.scale().range()[0]) * 5, 2)));
-          d3.select(this).selectAll('line').data([1], function(d){return d;}).enter().append("line")
+          d3.select(this).selectAll('.vzb-bc-axis-grid').data([1], function(d){return d;}).enter().append("line")
             .attr("x2", orient == VERTICAL ? (options.yAxisWidth? options.yAxisWidth : 0) : 0)
             .attr("y2", orient == HORIZONTAL ? (options.xAxisHeight? options.xAxisHeight : 0) : 0)
-            .style("stroke-dasharray", "2 2")
-            .style("stroke", "#999");
+            .attr("class", 'vzb-bc-axis-grid');
         });
 
       g.select('.vzb-axis-value')

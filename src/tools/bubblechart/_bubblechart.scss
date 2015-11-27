@@ -89,6 +89,10 @@
       .vzb-bc-axis-x,
       .vzb-bc-axis-y {
         @extend %vzb-chart-axis;
+        .vzb-bc-axis-grid {
+          stroke-dasharray: 2 2;
+          stroke: $vzb-color-grey;
+        }
       }
       .vzb-bc-axis-x-title,
       .vzb-bc-axis-y-title {
