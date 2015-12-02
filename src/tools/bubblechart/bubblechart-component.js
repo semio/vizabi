@@ -7,7 +7,7 @@ import PanZoom from './bubblechart-panzoom';
 import Exporter from 'helpers/svgexport';
 import axisSmart from 'helpers/d3.axisWithLabelPicker';
 import DynamicBackground from 'helpers/d3.dynamicBackground';
-import labelerCollision from 'helpers/d3.lebeler';
+import forceLabels from 'helpers/d3.force_labels';
 
 
 import {
@@ -676,7 +676,9 @@ var BubbleChartComp = Component.extend({
       })
       .onLongTap(function(d, i) {});
 
+    this.labelForce = forceLabels();
 
+    this.entityBubbles.call(this.labelForce.update);
     //TODO: no need to create trail group for all entities
     //TODO: instead of :append an :insert should be used to keep order, thus only few trail groups can be inserted
 
@@ -691,10 +693,12 @@ var BubbleChartComp = Component.extend({
       .enter()
       .append("g")
       .attr("class", "vzb-bc-entity")
-      .each(function() {
+      .each(function(d) {
         var view = d3.select(this);
-        view.append("text")
-          .attr("class", "vzb-bc-label-content");
+        var text = _this.model.marker.label.getValue(d);
+        view.append("g").append("text")
+          .text(text)
+          .attr("class", "vzb-bc-label-content").style('display', 'none');
         view.append("line")
           .attr("stroke-width", 0.6)
           .attr("stroke", "#666");
@@ -1006,6 +1010,8 @@ var BubbleChartComp = Component.extend({
         + (titleBBox.x + translate[0] + titleBBox.width + infoElHeight * .4) + ','
         + (translate[1] - infoElHeight * 0.8) + ')');
    }
+    var values = this._getValuesInterpolated(this.time);
+    this._forceLabel(values);
 
   },
 
@@ -1094,39 +1100,17 @@ var BubbleChartComp = Component.extend({
     }
 
     values = this._getValuesInterpolated(this.time);
-    var anchor_array = [];
-    var label_array = [];
     this.entityBubbles.each(function(d, index) {
       var view = d3.select(this);
-      _this._updateBubble(d, values, valuesLocked, index, view, duration, anchor_array, label_array);
+      _this._updateBubble(d, values, valuesLocked, index, view, duration);
     }); // each bubble;
 
-    var new_energy_function = function(index, label_array, anchor_array) {
-      var ener = 0;
-      // insert user-defined interaction energies here
-      return ener;
-    };
-
-    var new_cooling_schedule = function(currT, initialT, nsweeps) {
-      // insert user-defined schedule here
-      return updatedT;
-    };
-
-    this.labelerCollision = labelerCollision();
-
-    this.sim_ann = this.labelerCollision
-      .label(label_array)
-      .anchor(anchor_array)
-      .width(this.width)
-      .height(this.height)
-      .alt_energy(new_energy_function)
-      .alt_schedule(new_cooling_schedule);
-
-    this.sim_ann.start(1000);
+    clearTimeout(_this.finishDraw);
+    _this.finishDraw = setTimeout(_this._forceLabel(values), 1000);
 
     this.entityPrintText.each(function(d, index) {
-      var view = d3.select(this);
-      _this._updateTextLabel(d, values, view, anchor_array, label_array, index);
+      var view = d3.select(this).select('g');
+      _this._updateTextLabel(d, values, view, index);
     }); // each textLabel
 
 
@@ -1200,12 +1184,6 @@ var BubbleChartComp = Component.extend({
         cy: _this.yScale(valueY),
         r: scaledS
       });
-      var pos = this._getLabelCoordinate(d[KEY], scaledS);
-      var scaledSFull = Math.min(Math.max(parseInt(scaledS*2), 10), 30);
-      var width = view[0][0].getBBox().width;
-      var height = view[0][0].getBBox().height;
-      anchor_array.push({x: _this.xScale(valueX), y: _this.yScale(valueY), r: scaledS});
-      label_array.push({x: pos[0], y: pos[1], name: _this.model.marker.label.getValue(d) , width: width, height: height, scaledSFull: scaledSFull, geo: d[KEY]});
       _this._updateLabel(d, index, valueX, valueY, scaledS, valueL, duration);
 
     } // data exists
@@ -1224,29 +1202,14 @@ var BubbleChartComp = Component.extend({
     return _this._setPos(x, y, offset, scaledS, view)
   },
 
-  _updateTextLabel: function(d, values, view, anchor_array, label_array, index) {
-    var valueS = values.size[label_array[index].geo];
-    var valueY = values.axis_y[label_array[index].geo];
-    var valueX = values.axis_x[label_array[index].geo];
-    var scaledS = utils.areaToRadius(this.sScale(valueS));
+  _updateTextLabel: function(d, values, view) {
+    var _this = this;
+    var KEY = this.KEY;
+    var valueS = values.size[d[KEY]];
+    var scaledS = utils.areaToRadius(_this.sScale(valueS));
     var scaledSFull = Math.min(Math.max(parseInt(scaledS*2), 10), 30);
-    var pos = this._getLabelCoordinate(d.geo, scaledS, view);
-    var text = this.model.marker.label.getValue(d);
     view.select('text')
-      .text(text)
-      .attr('x', label_array[index].x)
-      .attr('y', label_array[index].y)
-      .style("font-size", label_array[index].scaledSFull);
-    view.select('line')
-      .attr("x1", anchor_array[index].x)
-      .attr("x2", label_array[index].x)
-      .attr("y1", anchor_array[index].y)
-      .attr("y2", label_array[index].y);
-
-    var boxWidth = view.select('text')[0][0].getBBox().width;
-    var boxHeight = view.select('text')[0][0].getBBox().height;
-    anchor_array[index] = {x: this.xScale(valueX), y: this.yScale(valueY), r: scaledS};
-    label_array[index] = {x: pos[0], y: pos[1], name: label_array[index].name , width: boxWidth, height: boxHeight, scaledSFull: scaledSFull, geo: label_array[index].geo};
+      .style("font-size", scaledSFull);
   },
 
   _updateLabel: function(d, index, valueX, valueY, scaledS, valueL, duration) {
@@ -1747,6 +1710,65 @@ var BubbleChartComp = Component.extend({
       f[this.TIMEDIM] = t;
       this.VALUES[t] = this.model.marker.getValues(f, [this.KEY]);
     }
+  },
+
+  _redrawLabels: function (_this) {
+    _this.entityPrintText.selectAll('g')
+      .attr("transform", function (d) {
+        return "translate(" + d.labelPos.x + " " + d.labelPos.y + ")"
+      });
+    _this.entityPrintText.selectAll('text').style('display', 'inherit');
+    _this.entityPrintText.selectAll('line')
+      .attr("x1", function (d) {
+        return d.anchorPos.x
+      })
+      .attr("y1", function (d) {
+        return d.anchorPos.y
+      })
+      .attr("x2", function (d) {
+        return d.labelPos.x
+      })
+      .attr("y2", function (d) {
+        return d.labelPos.y
+      })
+  },
+
+  _randomize: function (count, data) {
+    var z1 = d3.random.normal(),
+      z2 = d3.random.normal();
+    data = data.concat(d3.range(count || 100).map(function (d, i) {
+      return {z1: z1(), z2: z2(), num: data.length + i}
+    }));
+    this._correlate(data);
+  },
+  _correlate: function (data) {
+    var corr = 0;
+    var w = this.width, h = this.height,
+      x_mean = w / 2,
+      x_std = w / 10,
+      y_mean = h / 2,
+      y_std = h / 10;
+
+    data.forEach(function (d) {
+      d.x = x_mean + (d.z1 * x_std);
+      d.y = y_mean + y_std * (corr * d.z1 + d.z2 * Math.sqrt(1 - Math.pow(corr, 2)))
+    });
+    this.entityBubbles.call(this.labelForce.update)
+  },
+
+  _forceLabel: function (values) {
+    var data = [];
+// Initialize the label-forces
+    var charge = this.getLayoutProfile() === 'small' ? -30 : -100;
+    this.labelForce = forceLabels()
+      .linkDistance(0.0)
+      .gravity(0)
+      .nodes([]).links([])
+      .charge(charge)
+      .on("tick", this._redrawLabels(this));
+
+// and now for the data functionality
+    this._randomize(values.length, data);
   },
 
   /*
