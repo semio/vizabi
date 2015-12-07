@@ -264,7 +264,7 @@ var BubbleChartComp = Component.extend({
           return f[KEY] == d[KEY];
         });
 
-        _this._repositionLabels(d, i, this, resolvedX, resolvedY, resolvedX0, resolvedY0, 0, lineGroup);
+        _this._repositionLabelsSelect(d, i, this, resolvedX, resolvedY, resolvedX0, resolvedY0, 0, lineGroup);
       })
       .on("dragend", function(d, i) {
         var KEY = _this.KEY;
@@ -275,6 +275,37 @@ var BubbleChartComp = Component.extend({
         ]);
       });
 
+    this.labelDrag = d3.behavior.drag()
+      .on("dragstart", function(d, i) {
+        d3.event.sourceEvent.stopPropagation();
+        var KEY = _this.KEY;
+        _this.druging = d[KEY];
+      })
+      .on("drag", function(d, i) {
+
+        var KEY = _this.KEY;
+        if(!_this.ui.labels.dragging) return;
+
+        var cache = _this.cached[d[KEY]];
+        cache.labelFixed = true;
+
+        cache.labelX_ += d3.event.dx / _this.width;
+        cache.labelY_ += d3.event.dy / _this.height;
+
+        var resolvedX = _this.xScale(cache.labelX0) + cache.labelX_ * _this.width;
+        var resolvedY = _this.yScale(cache.labelY0) + cache.labelY_ * _this.height;
+
+        var resolvedX0 = _this.xScale(cache.labelX0);
+        var resolvedY0 = _this.yScale(cache.labelY0);
+
+        var lineGroup = _this.entityPrintText.filter(function(f) {
+          return f[KEY] == d[KEY];
+        }).select('line');
+        _this._repositionLabels(d, i, this, resolvedX, resolvedY, resolvedX0, resolvedY0, 0, lineGroup);
+      })
+      .on("dragend", function(d, i) {
+        _this.druging = null;
+      });
 
 
   },
@@ -693,13 +724,14 @@ var BubbleChartComp = Component.extend({
       .enter()
       .append("g")
       .attr("class", "vzb-bc-entity")
+      .call(_this.labelDrag)
       .each(function(d) {
         var view = d3.select(this);
         var text = _this.model.marker.label.getValue(d);
         view.append("g").append("text")
           .text(text)
           .attr("class", "vzb-bc-label-content").style('display', 'none');
-        view.append("line")
+        view.append("g").append("line")
           .attr("stroke-width", 0.6)
           .attr("stroke", "#666");
       });
@@ -1189,19 +1221,6 @@ var BubbleChartComp = Component.extend({
     } // data exists
   },
 
-  _getLabelCoordinate: function(geo, scaledS, view){
-    var _this = this;
-    var TIMEDIM = this.TIMEDIM;
-    var KEY = this.KEY;
-    var pointer = {};
-    pointer[KEY] = geo;
-    pointer[TIMEDIM] = _this.time;
-    var x = _this.xScale(_this.model.marker.axis_x.getValue(pointer));
-    var y = _this.yScale(_this.model.marker.axis_y.getValue(pointer));
-    var offset = utils.areaToRadius(_this.sScale(_this.model.marker.size.getValue(pointer)));
-    return _this._setPos(x, y, offset, scaledS, view)
-  },
-
   _updateTextLabel: function(d, values, view) {
     var _this = this;
     var KEY = this.KEY;
@@ -1319,7 +1338,7 @@ var BubbleChartComp = Component.extend({
             limitedY = _this.yScale(cached.labelY0) + cached.labelY_ * _this.height;
           }
 
-          _this._repositionLabels(d, index, this, limitedX, limitedY, limitedX0, limitedY0, duration, lineGroup);
+          _this._repositionLabelsSelect(d, index, this, limitedX, limitedY, limitedX0, limitedY0, duration, lineGroup);
 
         })
     } else {
@@ -1331,7 +1350,7 @@ var BubbleChartComp = Component.extend({
     }
   },
 
-  _repositionLabels: function(d, i, context, resolvedX, resolvedY, resolvedX0, resolvedY0, duration, lineGroup) {
+  _repositionLabelsSelect: function(d, i, context, resolvedX, resolvedY, resolvedX0, resolvedY0, duration, lineGroup) {
 
     var cache = this.cached[d[this.KEY]];
 
@@ -1340,20 +1359,7 @@ var BubbleChartComp = Component.extend({
     var width = parseInt(labelGroup.select("rect").attr("width"));
     var height = parseInt(labelGroup.select("rect").attr("height"));
 
-    if(resolvedX - width <= 0) { //check left
-      cache.labelX_ = (width - this.xScale(cache.labelX0)) / this.width;
-      resolvedX = this.xScale(cache.labelX0) + cache.labelX_ * this.width;
-    } else if(resolvedX + 20 > this.width) { //check right
-      cache.labelX_ = (this.width - 20 - this.xScale(cache.labelX0)) / this.width;
-      resolvedX = this.xScale(cache.labelX0) + cache.labelX_ * this.width;
-    }
-    if(resolvedY - height <= 0) { // check top
-      cache.labelY_ = (height - this.yScale(cache.labelY0)) / this.height;
-      resolvedY = this.yScale(cache.labelY0) + cache.labelY_ * this.height;
-    } else if(resolvedY + 13 > this.height) { //check bottom
-      cache.labelY_ = (this.height - 13 - this.yScale(cache.labelY0)) / this.height;
-      resolvedY = this.yScale(cache.labelY0) + cache.labelY_ * this.height;
-    }
+    var linePos = this._getLabelLinePos(resolvedX0, resolvedX, resolvedY0, resolvedY, width, height, 'select', cache);
 
     if(duration) {
       labelGroup
@@ -1364,6 +1370,19 @@ var BubbleChartComp = Component.extend({
     } else {
       labelGroup.attr("transform", "translate(" + resolvedX + "," + resolvedY + ")");
       lineGroup.attr("transform", "translate(" + resolvedX + "," + resolvedY + ")");
+    }
+
+    lineGroup.selectAll("line")
+      .attr("x1", linePos[0])
+      .attr("y1", linePos[1])
+      .attr("x2", -linePos[2])
+      .attr("y2", -linePos[3]);
+
+  },
+
+  _getLabelLinePos: function(resolvedX0, resolvedX, resolvedY0, resolvedY, width, height, type, cache){
+    if(cache){
+      this._checkPos(cache, resolvedX, resolvedY, height, width);
     }
 
     var diffX1 = resolvedX0 - resolvedX;
@@ -1379,12 +1398,12 @@ var BubbleChartComp = Component.extend({
     }
     // right middle
     if(angle > 45 && angle < 135) {
-      diffX2 = 0;
+      diffX2 = (type == 'all') ? width : 0;
       diffY2 = height / 4;
     }
     // middle top
     if(angle < -45 && angle > -135) {
-      diffX2 = width - 4;
+      diffX2 = (type == 'all') ? 0 : width - 4;
       diffY2 = height / 4;
     }
     // left middle
@@ -1393,12 +1412,41 @@ var BubbleChartComp = Component.extend({
       diffY2 = height / 2
     }
 
-    lineGroup.selectAll("line")
-      .attr("x1", diffX1)
-      .attr("y1", diffY1)
-      .attr("x2", -diffX2)
-      .attr("y2", -diffY2);
+    return [diffX1, diffY1, diffX2, diffY2];
+  },
 
+  _checkPos: function(cache, resolvedX, resolvedY, height, width){
+    if(resolvedX - width <= 0) { //check left
+      cache.labelX_ = (cache.scaledS0 * .75 + width + 10) / this.width;
+      resolvedX = this.xScale(cache.labelX0) - cache.labelX_ * this.width;
+    } else if(resolvedX + 20 > this.width) { //check right
+      cache.labelX_ = (this.width - 20 - this.xScale(cache.labelX0)) / this.width;
+      resolvedX = this.xScale(cache.labelX0) - cache.labelX_ * this.width;
+    }
+    if(resolvedY - height <= 0) { // check top
+      cache.labelY_ = (height - this.yScale(cache.labelY0)) / this.height;
+      resolvedY = this.yScale(cache.labelY0) + cache.labelY_ * this.height;
+    } else if(resolvedY + 13 > this.height) { //check bottom
+      cache.labelY_ = (this.height - 13 - this.yScale(cache.labelY0)) / this.height;
+      resolvedY = this.yScale(cache.labelY0) + cache.labelY_ * this.height;
+    }
+  },
+
+  _repositionLabels: function(d, i, context, resolvedX, resolvedY, resolvedX0, resolvedY0, duration, lineGroup) {
+
+    var cache = this.cached[d[this.KEY]];
+    var labelGroup = d3.select(context);
+    var width = parseInt(labelGroup.select('g').node().getBBox().width);
+    var height = parseInt(labelGroup.select('g').node().getBBox().height);
+
+    var linePos = this._getLabelLinePos(resolvedX0, resolvedX, resolvedY0, resolvedY, width, height, 'all', cache);
+
+    labelGroup.selectAll('g').attr("transform", "translate(" + resolvedX + "," + resolvedY + ")");
+
+    lineGroup.attr("x1", linePos[0])
+      .attr("y1", linePos[1])
+      .attr("x2", linePos[2])
+      .attr("y2", -linePos[3]);
   },
 
 
@@ -1712,63 +1760,57 @@ var BubbleChartComp = Component.extend({
     }
   },
 
-  _redrawLabels: function (_this) {
+  _redrawLabels: function (_this, values) {
     _this.entityPrintText.selectAll('g')
       .attr("transform", function (d) {
+        var valueY = values.axis_y[d[_this.KEY]];
+        var valueX = values.axis_x[d[_this.KEY]];
+        var valueS = values.size[d[_this.KEY]];
+        var scaledS = utils.areaToRadius(_this.sScale(valueS));
+        if(_this.cached[d[_this.KEY]] == null) _this.cached[d[_this.KEY]] = {};
+        var cached = _this.cached[d[_this.KEY]];
+        cached.scaledS0 = scaledS;
+        cached.labelX0 = valueX;
+        cached.labelY0 = valueY;
+        cached.labelX_ = d.labelPos.x;
+        cached.labelY_ = d.labelPos.y;
         return "translate(" + d.labelPos.x + " " + d.labelPos.y + ")"
       });
     _this.entityPrintText.selectAll('text').style('display', 'inherit');
     _this.entityPrintText.selectAll('line')
-      .attr("x1", function (d) {
-        return d.anchorPos.x
-      })
-      .attr("y1", function (d) {
-        return d.anchorPos.y
-      })
-      .attr("x2", function (d) {
-        return d.labelPos.x
-      })
-      .attr("y2", function (d) {
-        return d.labelPos.y
-      })
-  },
+      .each(function(d){
+        var lineGroup = d3.select(this);
 
-  _randomize: function (count, data) {
-    var z1 = d3.random.normal(),
-      z2 = d3.random.normal();
-    data = data.concat(d3.range(count || 100).map(function (d, i) {
-      return {z1: z1(), z2: z2(), num: data.length + i}
-    }));
-    this._correlate(data);
-  },
-  _correlate: function (data) {
-    var corr = 0;
-    var w = this.width, h = this.height,
-      x_mean = w / 2,
-      x_std = w / 10,
-      y_mean = h / 2,
-      y_std = h / 10;
+        var labelGroup = _this.entityPrintText.filter(function(f) {
+          return f[_this.KEY] == d[_this.KEY];
+        }).select('g');
 
-    data.forEach(function (d) {
-      d.x = x_mean + (d.z1 * x_std);
-      d.y = y_mean + y_std * (corr * d.z1 + d.z2 * Math.sqrt(1 - Math.pow(corr, 2)))
-    });
-    this.entityBubbles.call(this.labelForce.update)
+        var cached = _this.cached[d[_this.KEY]];
+        var width = parseInt(labelGroup.node().getBBox().width);
+        var height = parseInt(labelGroup.node().getBBox().height);
+        var resolvedX0 = _this.xScale(cached.labelX0);
+        var resolvedY0 = _this.yScale(cached.labelY0);
+
+        lineGroup.style("stroke-dasharray", "0 " + (cached.scaledS0 + 2) + " 100%");
+
+        var linePos = _this._getLabelLinePos(resolvedX0, d.labelPos.x, resolvedY0, d.labelPos.y, width, height, 'all');
+
+        lineGroup.attr("x1", linePos[0])
+          .attr("y1", linePos[1])
+          .attr("x2", linePos[2])
+          .attr("y2", -linePos[3]);
+      });
   },
 
   _forceLabel: function (values) {
-    var data = [];
-// Initialize the label-forces
     var charge = this.getLayoutProfile() === 'small' ? -30 : -100;
     this.labelForce = forceLabels()
       .linkDistance(0.0)
       .gravity(0)
       .nodes([]).links([])
       .charge(charge)
-      .on("tick", this._redrawLabels(this));
-
-// and now for the data functionality
-    this._randomize(values.length, data);
+      .on("tick", this._redrawLabels(this, values));
+    this.entityBubbles.call(this.labelForce.update);
   },
 
   /*
