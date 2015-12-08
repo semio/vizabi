@@ -707,9 +707,7 @@ var BubbleChartComp = Component.extend({
       })
       .onLongTap(function(d, i) {});
 
-    this.labelForce = forceLabels();
 
-    this.entityBubbles.call(this.labelForce.update);
     //TODO: no need to create trail group for all entities
     //TODO: instead of :append an :insert should be used to keep order, thus only few trail groups can be inserted
 
@@ -735,6 +733,9 @@ var BubbleChartComp = Component.extend({
           .attr("stroke-width", 0.6)
           .attr("stroke", "#666");
       });
+    this.labelForce = forceLabels();
+
+    this.entityPrintText.call(this.labelForce.update);
 
     this.entityTrails = this.bubbleContainer.selectAll(".vzb-bc-entity")
       .data(getKeys.call(this, "trail-"), function(d) {
@@ -1042,8 +1043,8 @@ var BubbleChartComp = Component.extend({
         + (titleBBox.x + translate[0] + titleBBox.width + infoElHeight * .4) + ','
         + (translate[1] - infoElHeight * 0.8) + ')');
    }
-    var values = this._getValuesInterpolated(this.time);
-    this._forceLabel(values);
+    this._forceLabel();
+    this.entityPrintText.call(this.labelForce.update);
 
   },
 
@@ -1138,7 +1139,7 @@ var BubbleChartComp = Component.extend({
     }); // each bubble;
 
     clearTimeout(_this.finishDraw);
-    _this.finishDraw = setTimeout(_this._forceLabel(values), 1000);
+    _this.finishDraw = setTimeout(_this._forceLabel(), 1000);
 
     this.entityPrintText.each(function(d, index) {
       var view = d3.select(this).select('g');
@@ -1760,7 +1761,9 @@ var BubbleChartComp = Component.extend({
     }
   },
 
-  _redrawLabels: function (_this, values) {
+  _redrawLabels: function () {
+    var _this = this;
+    var values = _this._getValuesInterpolated(_this.time);
     _this.entityPrintText.selectAll('g')
       .attr("transform", function (d) {
         var valueY = values.axis_y[d[_this.KEY]];
@@ -1802,15 +1805,16 @@ var BubbleChartComp = Component.extend({
       });
   },
 
-  _forceLabel: function (values) {
-    var charge = this.getLayoutProfile() === 'small' ? -30 : -100;
+  _forceLabel: function () {
     this.labelForce = forceLabels()
-      .linkDistance(0.0)
+      .charge(-20)
+      .linkDistance(20)
+      .size([this.width, this.height])
+      .linkStrength(0.9)
+      .friction(0.6)
       .gravity(0)
-      .nodes([]).links([])
-      .charge(charge)
-      .on("tick", this._redrawLabels(this, values));
-    this.entityBubbles.call(this.labelForce.update);
+      .on("tick", this._redrawLabels());
+    this.entityPrintText.call(this.labelForce.update);
   },
 
   /*
