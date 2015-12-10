@@ -14,6 +14,7 @@ var EntitiesModel = Model.extend({
   _defaults: {
     show: {},
     select: [],
+    selectLabel: [],
     highlight: [],
     opacitySelectDim: .3,
     opacityRegular: 1,
@@ -131,26 +132,26 @@ var EntitiesModel = Model.extend({
       this.select = (this._multiple) ? this.select.concat(added) : [added];
     }
   },
-    
+
   /**
    * Shows or unshows an entity from the set
    */
   showEntity: function(d) {
     //clear selected countries when showing something new
     this.clearSelected();
-    
+
     var dimension = this.getDimension();
     var value = d[dimension];
     var show = this.show[dimension].concat([]);
-      
+
     if(show[0] === "*") show = [];
-      
+
     if(this.isShown(d)) {
       show = show.filter(function(d) { return d !== value; });
     } else {
       show = show.concat(value);
     }
-      
+
     if(show.length === 0) show = ["*"];
     this.show[dimension] = show.concat([]);
 
@@ -168,6 +169,25 @@ var EntitiesModel = Model.extend({
     this.set("select", this.select, true);
   },
 
+  setLabelTextOffset: function(d, xy, timeDim, timeFormatter) {
+    var dimension = this.getDimension();
+    var value = d[dimension];
+    if(this.isSelectedLabel(d)) {
+      var label = this.selectLabel.find(function(d) {
+        return d[dimension] === value;
+      });
+      label.labelTextOffset = xy;
+    } else {
+      var added = {};
+      added[dimension] = value;
+      added["labelTextOffset"] = xy;
+      if(timeDim && timeFormatter) {
+        added["trailStartTime"] = timeFormatter(d[timeDim]);
+      }
+      this.selectLabel = (this._multiple) ? this.selectLabel.concat(added) : [added];
+    }
+  },
+
   /**
    * Selects an entity from the set
    * @returns {Boolean} whether the item is selected or not
@@ -180,7 +200,16 @@ var EntitiesModel = Model.extend({
         .map(function(d) {return d[dimension];})
         .indexOf(value) !== -1;
   },
-    
+
+  isSelectedLabel: function(d) {
+    var dimension = this.getDimension();
+    var value = d[this.getDimension()];
+
+    return this.selectLabel
+        .map(function(d) {return d[dimension];})
+        .indexOf(value) !== -1;
+  },
+
   /**
    * Selects an entity from the set
    * @returns {Boolean} whether the item is shown or not

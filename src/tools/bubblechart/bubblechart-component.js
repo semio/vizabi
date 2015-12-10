@@ -304,7 +304,15 @@ var BubbleChartComp = Component.extend({
         _this._repositionLabels(d, i, this, resolvedX, resolvedY, resolvedX0, resolvedY0, 0, lineGroup);
       })
       .on("dragend", function(d, i) {
+        var KEY = _this.KEY;
         _this.druging = null;
+        var cache = _this.cached[d[KEY]];
+        var resolvedX = _this.xScale(cache.labelX0) + cache.labelX_ * _this.width;
+        var resolvedY = _this.yScale(cache.labelY0) + cache.labelY_ * _this.height;
+        _this.model.entities.setLabelTextOffset(d, [
+          resolvedX,
+          resolvedY
+        ], _this.TIMEDIM, _this.timeFormatter);
       });
 
 
@@ -1164,7 +1172,7 @@ var BubbleChartComp = Component.extend({
   },
 
   //redraw Data Points
-  _updateBubble: function(d, values, valuesL, index, view, duration, anchor_array, label_array) {
+  _updateBubble: function(d, values, valuesL, index, view, duration) {
 
     var _this = this;
     var TIMEDIM = this.TIMEDIM;
@@ -1775,9 +1783,17 @@ var BubbleChartComp = Component.extend({
         cached.scaledS0 = scaledS;
         cached.labelX0 = valueX;
         cached.labelY0 = valueY;
-        cached.labelX_ = d.labelPos.x;
-        cached.labelY_ = d.labelPos.y;
-        return "translate(" + d.labelPos.x + " " + d.labelPos.y + ")"
+        var select = utils.find(_this.model.entities.selectLabel, function(f) {
+          return f[_this.KEY] == d[_this.KEY]
+        });
+        if(select && select.labelTextOffset){
+          cached.labelX_ = select.labelTextOffset[0];
+          cached.labelY_ = select.labelTextOffset[1];
+        } else {
+          cached.labelX_ = d.labelPos.x;
+          cached.labelY_ = d.labelPos.y;
+        }
+        return "translate(" + cached.labelX_ + " " + cached.labelY_ + ")"
       });
     _this.entityPrintText.selectAll('text').style('display', 'inherit');
     _this.entityPrintText.selectAll('line')
@@ -1796,7 +1812,7 @@ var BubbleChartComp = Component.extend({
 
         lineGroup.style("stroke-dasharray", "0 " + (cached.scaledS0 + 2) + " 100%");
 
-        var linePos = _this._getLabelLinePos(resolvedX0, d.labelPos.x, resolvedY0, d.labelPos.y, width, height, 'all');
+        var linePos = _this._getLabelLinePos(resolvedX0, cached.labelX_, resolvedY0, cached.labelY_, width, height, 'all');
 
         lineGroup.attr("x1", linePos[0])
           .attr("y1", linePos[1])
