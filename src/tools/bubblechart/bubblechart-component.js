@@ -289,11 +289,11 @@ var BubbleChartComp = Component.extend({
         var cache = _this.cached[d[KEY]];
         cache.labelFixed = true;
 
-        cache.labelX_ += d3.event.dx / _this.width;
-        cache.labelY_ += d3.event.dy / _this.height;
+        cache.labelX_ += d3.event.dx;
+        cache.labelY_ += d3.event.dy;
 
-        var resolvedX = _this.xScale(cache.labelX0) + cache.labelX_ * _this.width;
-        var resolvedY = _this.yScale(cache.labelY0) + cache.labelY_ * _this.height;
+        var resolvedX = cache.labelX_;
+        var resolvedY = cache.labelY_;
 
         var resolvedX0 = _this.xScale(cache.labelX0);
         var resolvedY0 = _this.yScale(cache.labelY0);
@@ -307,11 +307,9 @@ var BubbleChartComp = Component.extend({
         var KEY = _this.KEY;
         _this.druging = null;
         var cache = _this.cached[d[KEY]];
-        var resolvedX = _this.xScale(cache.labelX0) + cache.labelX_ * _this.width;
-        var resolvedY = _this.yScale(cache.labelY0) + cache.labelY_ * _this.height;
         _this.model.entities.setLabelTextOffset(d, [
-          resolvedX,
-          resolvedY
+          cache.labelX_,
+          cache.labelY_
         ], _this.TIMEDIM, _this.timeFormatter);
       });
 
@@ -1391,7 +1389,20 @@ var BubbleChartComp = Component.extend({
 
   _getLabelLinePos: function(resolvedX0, resolvedX, resolvedY0, resolvedY, width, height, type, cache){
     if(cache){
-      this._checkPos(cache, resolvedX, resolvedY, height, width);
+      if(resolvedX - width <= 0) { //check left
+        cache.labelX_ = (cache.scaledS0 * .75 + width + 10) / this.width;
+        resolvedX = this.xScale(cache.labelX0) - cache.labelX_ * this.width;
+      } else if(resolvedX + 20 > this.width) { //check right
+        cache.labelX_ = (this.width - 20 - this.xScale(cache.labelX0)) / this.width;
+        resolvedX = this.xScale(cache.labelX0) - cache.labelX_ * this.width;
+      }
+      if(resolvedY - height <= 0) { // check top
+        cache.labelY_ = (height - this.yScale(cache.labelY0)) / this.height;
+        resolvedY = this.yScale(cache.labelY0) + cache.labelY_ * this.height;
+      } else if(resolvedY + 13 > this.height) { //check bottom
+        cache.labelY_ = (this.height - 13 - this.yScale(cache.labelY0)) / this.height;
+        resolvedY = this.yScale(cache.labelY0) + cache.labelY_ * this.height;
+      }
     }
 
     var diffX1 = resolvedX0 - resolvedX;
@@ -1422,23 +1433,6 @@ var BubbleChartComp = Component.extend({
     }
 
     return [diffX1, diffY1, diffX2, diffY2];
-  },
-
-  _checkPos: function(cache, resolvedX, resolvedY, height, width){
-    if(resolvedX - width <= 0) { //check left
-      cache.labelX_ = (cache.scaledS0 * .75 + width + 10) / this.width;
-      resolvedX = this.xScale(cache.labelX0) - cache.labelX_ * this.width;
-    } else if(resolvedX + 20 > this.width) { //check right
-      cache.labelX_ = (this.width - 20 - this.xScale(cache.labelX0)) / this.width;
-      resolvedX = this.xScale(cache.labelX0) - cache.labelX_ * this.width;
-    }
-    if(resolvedY - height <= 0) { // check top
-      cache.labelY_ = (height - this.yScale(cache.labelY0)) / this.height;
-      resolvedY = this.yScale(cache.labelY0) + cache.labelY_ * this.height;
-    } else if(resolvedY + 13 > this.height) { //check bottom
-      cache.labelY_ = (this.height - 13 - this.yScale(cache.labelY0)) / this.height;
-      resolvedY = this.yScale(cache.labelY0) + cache.labelY_ * this.height;
-    }
   },
 
   _repositionLabels: function(d, i, context, resolvedX, resolvedY, resolvedX0, resolvedY0, duration, lineGroup) {
