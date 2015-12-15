@@ -289,19 +289,28 @@ var BubbleChartComp = Component.extend({
         var cache = _this.cached[d[KEY]];
         cache.labelFixed = true;
 
-        cache.labelX_ += d3.event.dx;
-        cache.labelY_ += d3.event.dy;
+        var resolvedX, resolvedY;
+        var select = utils.find(_this.model.entities.selectLabel, function(f) {
+          return f[KEY] == d[KEY]
+        });
+        if(select){
+          cache.labelX_ += d3.event.dx / _this.width;
+          cache.labelY_ += d3.event.dy / _this.height;
 
-        var resolvedX = cache.labelX_;
-        var resolvedY = cache.labelY_;
+        } else {
+          cache.labelX_ = (cache.labelX_ + d3.event.dx)/_this.width;
+          cache.labelY_ = (cache.labelY_ + d3.event.dy)/_this.height;
+        }
 
+        resolvedX = _this.xScale(cache.labelX0) + cache.labelX_ * _this.width;
+        resolvedY = _this.yScale(cache.labelY0) + cache.labelY_ * _this.height;
         var resolvedX0 = _this.xScale(cache.labelX0);
         var resolvedY0 = _this.yScale(cache.labelY0);
 
         var lineGroup = _this.entityPrintText.filter(function(f) {
           return f[KEY] == d[KEY];
-        }).select('line');
-        _this._repositionLabels(d, i, this, resolvedX, resolvedY, resolvedX0, resolvedY0, 0, lineGroup);
+        });
+        _this._repositionLabels(d, d3.select(this), resolvedX, resolvedY, resolvedX0, resolvedY0, lineGroup);
       })
       .on("dragend", function(d, i) {
         var KEY = _this.KEY;
@@ -1147,12 +1156,6 @@ var BubbleChartComp = Component.extend({
     clearTimeout(_this.finishDraw);
     _this.finishDraw = setTimeout(_this._forceLabel(), 1000);
 
-    this.entityPrintText.each(function(d, index) {
-      var view = d3.select(this).select('g');
-      _this._updateTextLabel(d, values, view, index);
-    }); // each textLabel
-
-
     // Call flush() after any zero-duration transitions to synchronously flush the timer queue
     // and thus make transition instantaneous. See https://github.com/mbostock/d3/issues/1951
     if(_this.duration == 0) d3.timer.flush();
@@ -1235,7 +1238,60 @@ var BubbleChartComp = Component.extend({
     var scaledS = utils.areaToRadius(_this.sScale(valueS));
     var scaledSFull = Math.min(Math.max(parseInt(scaledS*2), 10), 30);
     view.select('text')
-      .style("font-size", scaledSFull);
+      .style("font-size", scaledSFull)
+      .style('display', 'inherit');
+
+    var valueY = values.axis_y[d[KEY]];
+    var valueX = values.axis_x[d[KEY]];
+    if(_this.cached[d[KEY]] == null) _this.cached[d[KEY]] = {};
+    var cached = _this.cached[d[KEY]];
+    cached.scaledS0 = scaledS;
+    cached.labelX0 = valueX;
+    cached.labelY0 = valueY;
+    cached.valueX = valueX;
+    cached.valueY = valueY;
+    var select = utils.find(_this.model.entities.selectLabel, function(f) {
+      return f[KEY] == d[KEY]
+    });
+    var limitedX, limitedY;
+
+    var limitedX0 = _this.xScale(cached.labelX0);
+    var limitedY0 = _this.yScale(cached.labelY0);
+
+    var contentBBox = view.select('text').node().getBBox();
+    if(!cached.contentBBox || cached.contentBBox.width != contentBBox.width) {
+      cached.contentBBox = contentBBox;
+    }
+    if(select && select.labelTextOffset){
+      cached.labelX_ = select.labelTextOffset[0] ;
+      cached.labelY_ = select.labelTextOffset[1] ;
+      limitedX = _this.xScale(cached.labelX0) + cached.labelX_ * _this.width;
+      if(limitedX - cached.contentBBox.width <= 0) { //check left
+        cached.labelX_ = (cached.scaledS0 * .75 + cached.contentBBox.width + 10) / _this.width;
+        limitedX = _this.xScale(cached.labelX0) + cached.labelX_ * _this.width;
+      } else if(limitedX + 15 > _this.width) { //check right
+        cached.labelX_ = (_this.width - 15 - _this.xScale(cached.labelX0)) / _this.width;
+        limitedX = _this.xScale(cached.labelX0) + cached.labelX_ * _this.width;
+      }
+      limitedY = _this.yScale(cached.labelY0) + cached.labelY_ * _this.height;
+      if(limitedY - cached.contentBBox.height <= 0) { // check top
+        cached.labelY_ = (cached.scaledS0 * .75 + cached.contentBBox.height) / _this.height;
+        limitedY = _this.yScale(cached.labelY0) + cached.labelY_ * _this.height;
+      } else if(limitedY + 10 > _this.height) { //check bottom
+        cached.labelY_ = (_this.height - 10 - _this.yScale(cached.labelY0)) / _this.height;
+        limitedY = _this.yScale(cached.labelY0) + cached.labelY_ * _this.height;
+      }
+    } else {
+      cached.labelX_ = d.labelPos.x;
+      cached.labelY_ = d.labelPos.y;
+      limitedX = cached.labelX_;
+      limitedY = cached.labelY_;
+    }
+    var lineGroup = _this.entityPrintText.filter(function(f) {
+      return f[KEY] == d[KEY];
+    });
+    lineGroup.select('line').style("stroke-dasharray", "0 " + (cached.scaledS0 + 2) + " 100%");
+    _this._repositionLabels(d, view, limitedX, limitedY, limitedX0, limitedY0, lineGroup);
   },
 
   _updateLabel: function(d, index, valueX, valueY, scaledS, valueL, duration) {
@@ -1435,18 +1491,17 @@ var BubbleChartComp = Component.extend({
     return [diffX1, diffY1, diffX2, diffY2];
   },
 
-  _repositionLabels: function(d, i, context, resolvedX, resolvedY, resolvedX0, resolvedY0, duration, lineGroup) {
+  _repositionLabels: function(d, labelGroup, resolvedX, resolvedY, resolvedX0, resolvedY0, lineGroup) {
 
-    var cache = this.cached[d[this.KEY]];
-    var labelGroup = d3.select(context);
-    var width = parseInt(labelGroup.select('g').node().getBBox().width);
-    var height = parseInt(labelGroup.select('g').node().getBBox().height);
+    var width = parseInt(labelGroup.select('text').node().getBBox().width);
+    var height = parseInt(labelGroup.select('text').node().getBBox().height);
 
-    var linePos = this._getLabelLinePos(resolvedX0, resolvedX, resolvedY0, resolvedY, width, height, 'all', cache);
+    var linePos = this._getLabelLinePos(resolvedX0, resolvedX, resolvedY0, resolvedY, width, height, 'all');
 
     labelGroup.selectAll('g').attr("transform", "translate(" + resolvedX + "," + resolvedY + ")");
 
-    lineGroup.attr("x1", linePos[0])
+    lineGroup.selectAll("line")
+      .attr("x1", linePos[0])
       .attr("y1", linePos[1])
       .attr("x2", linePos[2])
       .attr("y2", -linePos[3]);
@@ -1766,53 +1821,12 @@ var BubbleChartComp = Component.extend({
   _redrawLabels: function () {
     var _this = this;
     var values = _this._getValuesInterpolated(_this.time);
-    _this.entityPrintText.selectAll('g')
-      .attr("transform", function (d) {
-        var valueY = values.axis_y[d[_this.KEY]];
-        var valueX = values.axis_x[d[_this.KEY]];
-        var valueS = values.size[d[_this.KEY]];
-        var scaledS = utils.areaToRadius(_this.sScale(valueS));
-        if(_this.cached[d[_this.KEY]] == null) _this.cached[d[_this.KEY]] = {};
-        var cached = _this.cached[d[_this.KEY]];
-        cached.scaledS0 = scaledS;
-        cached.labelX0 = valueX;
-        cached.labelY0 = valueY;
-        var select = utils.find(_this.model.entities.selectLabel, function(f) {
-          return f[_this.KEY] == d[_this.KEY]
-        });
-        if(select && select.labelTextOffset){
-          cached.labelX_ = select.labelTextOffset[0];
-          cached.labelY_ = select.labelTextOffset[1];
-        } else {
-          cached.labelX_ = d.labelPos.x;
-          cached.labelY_ = d.labelPos.y;
-        }
-        return "translate(" + cached.labelX_ + " " + cached.labelY_ + ")"
+    _this.entityPrintText
+      .each(function (d) {
+        var view = d3.select(this);
+        _this._updateTextLabel(d, values, view);
       });
     _this.entityPrintText.selectAll('text').style('display', 'inherit');
-    _this.entityPrintText.selectAll('line')
-      .each(function(d){
-        var lineGroup = d3.select(this);
-
-        var labelGroup = _this.entityPrintText.filter(function(f) {
-          return f[_this.KEY] == d[_this.KEY];
-        }).select('g');
-
-        var cached = _this.cached[d[_this.KEY]];
-        var width = parseInt(labelGroup.node().getBBox().width);
-        var height = parseInt(labelGroup.node().getBBox().height);
-        var resolvedX0 = _this.xScale(cached.labelX0);
-        var resolvedY0 = _this.yScale(cached.labelY0);
-
-        lineGroup.style("stroke-dasharray", "0 " + (cached.scaledS0 + 2) + " 100%");
-
-        var linePos = _this._getLabelLinePos(resolvedX0, cached.labelX_, resolvedY0, cached.labelY_, width, height, 'all');
-
-        lineGroup.attr("x1", linePos[0])
-          .attr("y1", linePos[1])
-          .attr("x2", linePos[2])
-          .attr("y2", -linePos[3]);
-      });
   },
 
   _forceLabel: function () {
