@@ -290,17 +290,8 @@ var BubbleChartComp = Component.extend({
         cache.labelFixed = true;
 
         var resolvedX, resolvedY;
-        var select = utils.find(_this.model.entities.selectLabel, function(f) {
-          return f[KEY] == d[KEY]
-        });
-        if(select){
-          cache.labelX_ += d3.event.dx / _this.width;
-          cache.labelY_ += d3.event.dy / _this.height;
-
-        } else {
-          cache.labelX_ = (cache.labelX_ + d3.event.dx)/_this.width;
-          cache.labelY_ = (cache.labelY_ + d3.event.dy)/_this.height;
-        }
+        cache.labelX_ += d3.event.dx / _this.width;
+        cache.labelY_ += d3.event.dy / _this.height;
 
         resolvedX = _this.xScale(cache.labelX0) + cache.labelX_ * _this.width;
         resolvedY = _this.yScale(cache.labelY0) + cache.labelY_ * _this.height;
@@ -321,8 +312,6 @@ var BubbleChartComp = Component.extend({
           cache.labelY_
         ], _this.TIMEDIM, _this.timeFormatter);
       });
-
-
   },
 
 
@@ -1265,27 +1254,26 @@ var BubbleChartComp = Component.extend({
     if(select && select.labelTextOffset){
       cached.labelX_ = select.labelTextOffset[0] ;
       cached.labelY_ = select.labelTextOffset[1] ;
-      limitedX = _this.xScale(cached.labelX0) + cached.labelX_ * _this.width;
-      if(limitedX - cached.contentBBox.width <= 0) { //check left
-        cached.labelX_ = (cached.scaledS0 * .75 + cached.contentBBox.width + 10) / _this.width;
-        limitedX = _this.xScale(cached.labelX0) + cached.labelX_ * _this.width;
-      } else if(limitedX + 15 > _this.width) { //check right
-        cached.labelX_ = (_this.width - 15 - _this.xScale(cached.labelX0)) / _this.width;
-        limitedX = _this.xScale(cached.labelX0) + cached.labelX_ * _this.width;
-      }
-      limitedY = _this.yScale(cached.labelY0) + cached.labelY_ * _this.height;
-      if(limitedY - cached.contentBBox.height <= 0) { // check top
-        cached.labelY_ = (cached.scaledS0 * .75 + cached.contentBBox.height) / _this.height;
-        limitedY = _this.yScale(cached.labelY0) + cached.labelY_ * _this.height;
-      } else if(limitedY + 10 > _this.height) { //check bottom
-        cached.labelY_ = (_this.height - 10 - _this.yScale(cached.labelY0)) / _this.height;
-        limitedY = _this.yScale(cached.labelY0) + cached.labelY_ * _this.height;
-      }
     } else {
-      cached.labelX_ = d.labelPos.x;
-      cached.labelY_ = d.labelPos.y;
-      limitedX = cached.labelX_;
-      limitedY = cached.labelY_;
+      cached.labelX_ = d.labelPos.x/_this.width - 1;
+      cached.labelY_ = d.labelPos.y/_this.height - 1;
+    }
+
+    limitedX = _this.xScale(cached.labelX0) + cached.labelX_ * _this.width;
+    if(limitedX - cached.contentBBox.width <= 0) { //check left
+      cached.labelX_ = (cached.scaledS0 * .75 + cached.contentBBox.width + 10) / _this.width;
+      limitedX = _this.xScale(cached.labelX0) + cached.labelX_ * _this.width;
+    } else if(limitedX + 15 > _this.width) { //check right
+      cached.labelX_ = (_this.width - 15 - _this.xScale(cached.labelX0)) / _this.width;
+      limitedX = _this.xScale(cached.labelX0) + cached.labelX_ * _this.width;
+    }
+    limitedY = _this.yScale(cached.labelY0) + cached.labelY_ * _this.height;
+    if(limitedY - cached.contentBBox.height <= 0) { // check top
+      cached.labelY_ = (cached.scaledS0 * .75 + cached.contentBBox.height) / _this.height;
+      limitedY = _this.yScale(cached.labelY0) + cached.labelY_ * _this.height;
+    } else if(limitedY + 10 > _this.height) { //check bottom
+      cached.labelY_ = (_this.height - 10 - _this.yScale(cached.labelY0)) / _this.height;
+      limitedY = _this.yScale(cached.labelY0) + cached.labelY_ * _this.height;
     }
     var lineGroup = _this.entityPrintText.filter(function(f) {
       return f[KEY] == d[KEY];
@@ -1834,9 +1822,9 @@ var BubbleChartComp = Component.extend({
       .charge(-20)
       .linkDistance(20)
       .size([this.width, this.height])
-      .linkStrength(0.9)
-      .friction(0.6)
-      .gravity(0)
+      .linkStrength(0.5)
+      .friction(0.9)
+      .gravity(0.01)
       .on("tick", this._redrawLabels());
     this.entityPrintText.call(this.labelForce.update);
   },
