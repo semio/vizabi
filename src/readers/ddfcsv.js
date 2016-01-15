@@ -192,12 +192,12 @@ var DDFCSVReader = Reader.extend({
 
     utils.forEach(FILE_CACHED[_this.indexPath], function (indexRecord) {
       // todo: fix condition -> geo
-      if (query.select.indexOf(indexRecord.measure) >= 0 &&
+      if (query.select.indexOf(indexRecord.value_concept) >= 0 &&
         (!query.where['geo.cat'] || query.where['geo.cat'].indexOf(indexRecord.geo) >= 0)) {
         var path = _this._basepath + '/' + indexRecord.file;
         // todo: swap...
-        CACHE.measureFileToName[indexRecord.measure] = path;
-        CACHE.measureNameToFile[path] = indexRecord.measure;
+        CACHE.measureFileToName[indexRecord.value_concept] = path;
+        CACHE.measureNameToFile[path] = indexRecord.value_concept;
         expected.push(_this.load(path));
       }
     });
@@ -211,8 +211,8 @@ var DDFCSVReader = Reader.extend({
 
     utils.forEach(FILE_CACHED[_this.dimensionPath], function (dimensionRecord) {
       // todo: remove this ugly hack after open numbers fixing
-      if (dimensionRecord.dimension !== 'geo' && dimensionRecord.dimension !== 'un_state') {
-        expected.push(_this.load(_this._basepath + '/ddf--list--geo--' + dimensionRecord.dimension + '.csv'));
+      if (dimensionRecord.concept !== 'geo' && dimensionRecord.concept !== 'un_state') {
+        expected.push(_this.load(_this._basepath + '/ddf--list--geo--' + dimensionRecord.concept + '.csv'));
       }
     });
 
