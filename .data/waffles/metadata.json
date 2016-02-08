@@ -188,7 +188,7 @@
             "interpolation": "exp",
             "scales": ["linear", "log"],
             "sourceLink": "",
-            "domain": [50, 1000000]
+            "domain": [50000, 500000]
         },
         "andel_hogskoleutbildade": {
             "allowCharts": ["bubblechart", "mountainchart", "bubblemap"],
@@ -197,7 +197,7 @@
             "interpolation": "exp",
             "scales": ["linear", "log"],
             "sourceLink": "",
-            "domain": [0, 100]
+            "domain": [0, 55]
         },
         "forvarvsfrekvens": {
             "allowCharts": ["bubblechart", "mountainchart", "bubblemap"],
@@ -206,7 +206,7 @@
             "interpolation": "exp",
             "scales": ["linear", "log"],
             "sourceLink": "",
-            "domain": [0, 100]
+            "domain": [25, 100]
         },
         "flytt_arbete": {
             "allowCharts": ["bubblechart", "mountainchart", "bubblemap"],
@@ -215,7 +215,7 @@
             "interpolation": "exp",
             "scales": ["linear", "log"],
             "sourceLink": "",
-            "domain": [-10000, 10000]
+            "domain": [-1000, 1000]
         },
         "flytt_utbildning": {
             "allowCharts": ["bubblechart", "mountainchart", "bubblemap"],
@@ -224,7 +224,7 @@
             "interpolation": "exp",
             "scales": ["linear", "log"],
             "sourceLink": "",
-            "domain": [-10000, 10000]
+            "domain": [-1000, 1000]
         },
         "geo.kommun": {
             "allowCharts": ["*"],
