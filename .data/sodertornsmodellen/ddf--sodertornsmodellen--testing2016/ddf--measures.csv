@@ -1,0 +1,7 @@
+measure,name,name_short,description
+medelinkomst,Medelinkomst,Medelinkomst,Medelinkomsten i ett givet geografiskt område.
+andel_hogskoleutbildade,Andel högskoleutbildade,Andel högskoleutbildade,Andel av befolkningen som har eftergymnasial utbildning (3+ år).
+befolkning,Befolkning,Befolkning,Alla invånare i ett givet geografiskt område.
+forvarvsfrekvens,Förvärvsfrekvens,Förvärvsfrekvens,Förvärvsintensitet är ett mått som anger andel personer med bostad i regionen (nattbefolkning) som förvärvsarbetar i en viss åldersgrupp i relation till samtliga personer i den aktuella åldersgruppen. Förvärvsintensitet beräknas ofta utifrån i åldersklassen 20-64 år eller 16-64 år.
+flytt_arbete,Flytt arbete,Flytt arbete,Nettomigration till/från ett geografisk område på grund av arbete.
+flytt_utbildning,Flytt utbildning,Flytt utbildning,Nettomigration till/från ett geografisk område på grund av utbildning.

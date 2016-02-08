@@ -1,0 +1,5 @@
+dependency_type,foreign_namespace,ddf_dataset,release,type,filter,url,note
+manual,,,,,,https://github.com/Gapminder/raw--sodertornsmodellen--testing2016,
+import,https://raw.githubusercontent.com/open-numbers/,ddf--open_numbers--core,master,*,*,https://raw.githubusercontent.com/open-numbers/ddf--open_numbers--core/master/,
+,,,,,,,
+,,,,,,,

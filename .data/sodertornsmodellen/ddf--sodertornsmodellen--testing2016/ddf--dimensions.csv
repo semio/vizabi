@@ -1,0 +1,7 @@
+concept,type,subdim_of,name,name_short,name_long,link,description,usability,total_entity,total_name,default_entities,drilldowns,drillups,incomplete_drillups,ordinal,measure,interval,cardinality,aliases,pattern,ddf_inheritance
+time_interval,dimension,,Time Interval,Time,Time Interval,,Any time interval,,,,,,,,1.0,time_utf,1.0,,,,"[{dataset:'ddf--gapminder--ontology', timestamp:'1/10/2016 8:43:49 PM +00:00',note:''}]"
+year,subdim,time_interval,Year,Year,Year,,,,,,,"quarter, month, week, date
+",,,1.0,,1.0,,,YYYY,"[{dataset:'ddf--gapminder--ontology', timestamp:'1/10/2016 8:43:49 PM +00:00',note:''}]"
+geo,dimension,,Geography,Geo,,,Geographical & political divisions of the world.,,,,"world,asia,europe,africa,america",,,,,,,,,,"[{dataset:'ddf--gapminder--dim_geo_countries_and_groups', timestamp:'1/10/2016 8:43:49 PM +00:00',note:''}]"
+kommun,subdim,geo,Kommuner,,,https://sv.wikipedia.org/wiki/Kommun,"En kommun är ett territoriellt avgränsat område, en administrativ enhet för lokalt självstyre, en politisk organisation med direktvalda beslutsfattare, juridisk person med obligatoriskt medlemskap, som kan ingå avtal och äga fast och lös egendom.",,,,,basomrade,,,,,,,,,
+basomrade,subdim,geo,Basområden,,,https://sv.wikipedia.org/wiki/Basomr%C3%A5de,Basområde är en geografisk områdesindelning mellan stadsdelar och kvarter.,,,,,,,,,,,,,,
