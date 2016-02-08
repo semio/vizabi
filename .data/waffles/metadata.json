@@ -215,7 +215,7 @@
             "interpolation": "exp",
             "scales": ["linear", "log"],
             "sourceLink": "",
-            "domain": [-1000, 1000]
+            "domain": [-1500, 1100]
         },
         "flytt_utbildning": {
             "allowCharts": ["bubblechart", "mountainchart", "bubblemap"],
