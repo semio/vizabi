@@ -123,7 +123,23 @@ var DDFCSVReader = Reader.extend({
           'geo.latitude': geoRecord.latitude,
           'geo.longitude': geoRecord.longitude
         }
+      },
+      basomrade: function (geoRecord) {
+        return {
+          geo: geoRecord.geo,
+          'geo.name': geoRecord.name,
+          'geo.cat': queryDescriptor.category,
+          'geo.kommun': geoRecord.kommun
+        }
+      },
+      kommun: function (geoRecord) {
+        return {
+          geo: geoRecord.geo,
+          'geo.name': geoRecord.name,
+          'geo.cat': queryDescriptor.category
+        }
       }
+
     };
 
     var expectedGeoData = null;

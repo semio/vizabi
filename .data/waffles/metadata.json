@@ -171,6 +171,68 @@
             "scales": ["linear", "log"],
             "sourceLink": ""
         },
+        "befolkning": {
+            "allowCharts": ["mountainchart", "bubblechart", "bubblemap", "linechart", "barchart", "barrankchart"],
+            "use": "indicator",
+            "unit": "befolkning",
+            "scaleType": "linear",
+            "interpolation": "exp",
+            "scales": ["linear", "log"],
+            "sourceLink": "",
+            "domain": [10, 100000]
+        },
+        "medelinkomst": {
+            "allowCharts": ["bubblechart", "mountainchart", "bubblemap"],
+            "use": "indicator",
+            "unit": "medelinkomst",
+            "interpolation": "exp",
+            "scales": ["linear", "log"],
+            "sourceLink": "",
+            "domain": [50, 1000000]
+        },
+        "andel_hogskoleutbildade": {
+            "allowCharts": ["bubblechart", "mountainchart", "bubblemap"],
+            "use": "indicator",
+            "unit": "andel_hogskoleutbildade",
+            "interpolation": "exp",
+            "scales": ["linear", "log"],
+            "sourceLink": "",
+            "domain": [0, 100]
+        },
+        "forvarvsfrekvens": {
+            "allowCharts": ["bubblechart", "mountainchart", "bubblemap"],
+            "use": "indicator",
+            "unit": "forvarvsfrekvens",
+            "interpolation": "exp",
+            "scales": ["linear", "log"],
+            "sourceLink": "",
+            "domain": [0, 100]
+        },
+        "flytt_arbete": {
+            "allowCharts": ["bubblechart", "mountainchart", "bubblemap"],
+            "use": "indicator",
+            "unit": "flytt_arbete",
+            "interpolation": "exp",
+            "scales": ["linear", "log"],
+            "sourceLink": "",
+            "domain": [-10000, 10000]
+        },
+        "flytt_utbildning": {
+            "allowCharts": ["bubblechart", "mountainchart", "bubblemap"],
+            "use": "indicator",
+            "unit": "flytt_utbildning",
+            "interpolation": "exp",
+            "scales": ["linear", "log"],
+            "sourceLink": "",
+            "domain": [-10000, 10000]
+        },
+        "geo.kommun": {
+            "allowCharts": ["*"],
+            "use": "property",
+            "unit": "",
+            "scales": ["ordinal"],
+            "sourceLink": ""
+        },
         "_default": {
             "allowCharts": ["*"],
             "use": "constant",
@@ -186,23 +248,16 @@
                 "id": "time"
             }, {
                 "id": "_properties",
-                "children": [{"id": "geo"}, {"id": "geo.name"}, {"id": "geo.region"}, {"id": "size"}]
+                "children": [{"id": "geo"}, {"id": "geo.name"}, {"id": "geo.kommun"}, {"id": "size"}]
             }, {
-                "id": "economy",
+                "id": "sodertornsmodellen",
                 "children": [
-                    {"id": "inequality", "children": [{"id":"gini"}]}, 
-                    {"id": "gdp_p_cap_const_ppp2011_dollar"},
-                    {"id": "gdp_const_ppp2011_dollar"}
+                    {"id": "medelinkomst"}, 
+                    {"id": "andel_hogskoleutbildade"},
+                    {"id": "forvarvsfrekvens"},
+                    {"id": "flytt_utbildning"},
+                    {"id": "flytt_arbete"}
                 ]
-            }, {
-                "id": "health",
-                "children": [
-                    {"id": "life_expectancy"}, 
-                    {"id": "child_mortality_rate_per1000"},
-                    {"id": "fertility_rate"}
-                ]
-            }, {
-                "id": "population"
             }, {
                 "id": "_default"
             }

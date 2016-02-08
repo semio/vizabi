@@ -179,9 +179,9 @@ BubbleMap.define('datawarning_content', {
 BubbleMap.define('default_options', {
   state: {
     time: {
-      start: "1800",
-      end: "2015",
-      value: "2015",
+      start: "2000",
+      end: "2013",
+      value: "2013",
       step: 1,
       speed: 300,
       formatInput: "%Y"
@@ -192,7 +192,7 @@ BubbleMap.define('default_options', {
       opacityRegular: 1,
       show: {
         _defs_: {
-          "geo.cat": ["country", "unstate"]
+          "geo.cat": ["basomrade"]
         }
       },
     },
@@ -204,7 +204,7 @@ BubbleMap.define('default_options', {
       },
       size: {
         use: "indicator",
-        which: "population",
+        which: "befolkning",
         scaleType: "linear",
         allow: {
           scales: ["linear", "log"]
@@ -222,7 +222,7 @@ BubbleMap.define('default_options', {
       },
       color: {
         use: "property",
-        which: "geo.region",
+        which: "geo.kommun",
         scaleType: "ordinal",
         allow: {
           names: ["!geo.name"]
@@ -231,8 +231,10 @@ BubbleMap.define('default_options', {
     }
   },
   data: {
-    reader: "waffle",
-    path: "//waffle-server.gapminderdev.org/api/graphs/stats/vizabi-tools",
+    reader: "ddfcsv",
+    path: globals.gapminder_paths.baseUrl + "/data/sodertornsmodellen/ddf--sodertornsmodellen--testing2016",
+    //reader: "waffle",
+    //path: "//waffle-server.gapminderdev.org/api/graphs/stats/vizabi-tools",
     //path: "http://waffle-server-dev.gapminderdev.org/api/graphs/stats/vizabi-tools",
     //reader: "csv",
     //path: globals.gapminder_paths.baseUrl + "data/waffles/dont-panic-poverty.csv",
@@ -486,9 +488,9 @@ BubbleChart.define('default_options', {
 
   state: {
     time: {
-      start: "1800",
-      end: "2015",
-      value: "2015",
+      start: "2000",
+      end: "2013",
+      value: "2013",
       step: 1,
       formatInput: "%Y",
       trails: true,
@@ -499,7 +501,7 @@ BubbleChart.define('default_options', {
       dim: "geo",
       show: {
         _defs_: {
-          "geo.cat": ["country", "unstate"]
+          "geo.cat": ["basomrade"]
         }
       }
     },
@@ -513,7 +515,7 @@ BubbleChart.define('default_options', {
       },
       axis_y: {
         use: "indicator",
-        which: "child_mortality_rate_per1000",
+        which: "medelinkomst",
         scaleType: "linear",
         allow: {
           scales: ["linear", "log"]
@@ -521,15 +523,15 @@ BubbleChart.define('default_options', {
       },
       axis_x: {
         use: "indicator",
-        which: "gdp_p_cap_const_ppp2011_dollar",
-        scaleType: "log",
+        which: "andel_hogskoleutbildade",
+        scaleType: "linear",
         allow: {
           scales: ["linear", "log"]
         }
       },
       color: {
         use: "property",
-        which: "geo.region",
+        which: "geo.kommun",
         scaleType: "ordinal",
         allow: {
           names: ["!geo.name"]
@@ -537,7 +539,7 @@ BubbleChart.define('default_options', {
       },
       size: {
         use: "indicator",
-        which: "population",
+        which: "befolkning",
         scaleType: "linear",
         allow: {
           scales: ["linear", "log"]
@@ -549,7 +551,8 @@ BubbleChart.define('default_options', {
   },
   data: {
     reader: "ddfcsv",
-    path: "https://raw.githubusercontent.com/buchslava/ddf--gapminder--systema_globalis/master",
+    path: globals.gapminder_paths.baseUrl + "/data/sodertornsmodellen/ddf--sodertornsmodellen--testing2016",
+    //path: "https://raw.githubusercontent.com/buchslava/ddf--gapminder--systema_globalis/master",
     //reader: "waffle",
     //path: "//waffle-server.gapminderdev.org/api/graphs/stats/vizabi-tools",
     //path: "http://waffle-server-dev.gapminderdev.org/api/graphs/stats/vizabi-tools",
@@ -691,7 +694,8 @@ MCComponent.define("preload", function(done) {
 
 //preloading bubble map country shapes
 BMComponent.define("preload", function(done) {
-  var shape_path = globals.gapminder_paths.baseUrl + "data/world-50m.json";
+  //var shape_path = globals.gapminder_paths.baseUrl + "data/world-50m.json";
+  var shape_path = globals.gapminder_paths.baseUrl + "data/sodertornsmodellen/ddf--sodertornsmodellen--testing2016/geojson/topojson.json";
 
   d3.json(shape_path, function(error, json) {
     if(error) return console.warn("Failed loading json " + shape_path + ". " + error);
