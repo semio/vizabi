@@ -551,7 +551,7 @@ BubbleChart.define('default_options', {
   },
   data: {
     reader: "ddfcsv",
-    path: globals.gapminder_paths.baseUrl + "/data/sodertornsmodellen/ddf--sodertornsmodellen--testing2016",
+    path: globals.gapminder_paths.baseUrl + "data/sodertornsmodellen/ddf--sodertornsmodellen--testing2016",
     //path: "https://raw.githubusercontent.com/buchslava/ddf--gapminder--systema_globalis/master",
     //reader: "waffle",
     //path: "//waffle-server.gapminderdev.org/api/graphs/stats/vizabi-tools",
