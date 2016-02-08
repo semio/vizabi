@@ -103,8 +103,8 @@ var Data = Class.extend({
 
             // if so, merge the selects to the base query
             Array.prototype.push.apply(query.select, queueItem.query.select);
-            // merge formatters so the reader can format the newly added columns
-            utils.extend(reader.formatters, queueItem.reader.formatters);
+            // merge parsers so the reader can parse the newly added columns
+            utils.extend(reader.parsers, queueItem.reader.parsers);
 
             // include query's promise to promises for base query
             mergedQueries.push(queueItem);
@@ -317,9 +317,6 @@ var Data = Class.extend({
           
       }else{
           // If there is a time field in query.where clause, then we are dealing with indicators in this request
-
-          // If time is restricted to a single point then override the input with that single point
-          if(query.where.time[0].length === 1) framesArray = query.where.time[0];
           
           // Put together a template for cached filtered sets (see below what's needed)
           for(k=0; k<kLength; k++){

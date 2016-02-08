@@ -6,23 +6,13 @@ import Intervals from 'intervals';
 import globals from 'globals';
 import * as models from 'models/_index';
 
-var time_formats = {
-  "year": "%Y",
-  "month": "%b",
-  "week": "week %U",
-  "day": "%d/%m/%Y",
-  "hour": "%d/%m/%Y %H",
-  "minute": "%d/%m/%Y %H:%M",
-  "second": "%d/%m/%Y %H:%M:%S"
-};
-
 var _DATAMANAGER = new Data();
 
 var ModelLeaf = EventSource.extend({
 
   _name: '',
   _parent: null,
-  _val: null,
+  _persistent: true,
 
   init: function(name, value, parent, binds) {
 
@@ -31,24 +21,36 @@ var ModelLeaf = EventSource.extend({
       get: this.get,
       set: this.set
     });
+    Object.defineProperty(this, 'persistent', {
+      get: function() { return this._persistent; }
+    });
 
     this._super();
 
-    // after super so there is a .events object
     this._name = name;
     this._parent = parent;
     this.value = value;
-    this.on(binds);
+    this.on(binds); // after super so there is an .events object
   },
 
-  get: function() {
-    return this._val;
+  // if they want a persistent value and the current value is not persistent, return the last persistent value
+  get: function(persistent) {
+    return (persistent && !this._persistent) ? this._persistentVal : this._val;
   },
 
   set: function(val, force, persistent) {
     if (force || (this._val !== val && JSON.stringify(this._val) !== JSON.stringify(val))) {
+
+      // persistent defaults to true
+      persistent = (typeof persistent !== 'undefined') ? persistent : true;
+ 
+      // set leaf properties
+      if (persistent) this._persistentVal = val; // set persistent value if change is persistent.
       this._val = val;
-      this.trigger(new ChangeEvent(this, persistent), this._name);
+      this._persistent = persistent;
+
+      // trigger change event
+      this.trigger(new ChangeEvent(this), this._name);
     }
   },
 
@@ -188,17 +190,18 @@ var Model = EventSource.extend({
       this.validate();
     }
 
-    // if this set()-call was the one freezing the tree, now the tree can be unfrozen (i.e. all setting is done)
-    if (freezeCall) {
-      this.setTreeFreezer(false);
-    }
-
     if(!setting || force) {
       this._setting = false;
       if(!this.isHook()) {
         this.setReady();
       }
     }
+    
+    // if this set()-call was the one freezing the tree, now the tree can be unfrozen (i.e. all setting is done)
+    if (freezeCall) {
+      this.setTreeFreezer(false);
+    }
+
   },
 
 
@@ -264,14 +267,16 @@ var Model = EventSource.extend({
    * Gets the current model and submodel values as a JS object
    * @returns {Object} All model as JS object, leafs will return their values
    */
-  getPlainObject: function() {
+  getPlainObject: function(persistent) {
     var obj = {};
     utils.forEach(this._data, function(dataItem, i) {
-      //if it's a submodel
+      // if it's a submodel
       if(dataItem instanceof Model) {
-        obj[i] = dataItem.getPlainObject();
-      } else {
-        obj[i] = dataItem.value;
+        obj[i] = dataItem.getPlainObject(persistent);
+      } 
+      // if it's a modelLeaf
+      else {
+        obj[i] = dataItem.get(persistent);
       }
     });
     return obj;
@@ -385,6 +390,7 @@ var Model = EventSource.extend({
     //only ready if nothing is loading at all
     var prev_ready = this._ready;
     this._ready = !this.isLoading() && !this._setting && !this._loadCall;
+    // if now ready and wasn't ready yet
     if(this._ready && prev_ready !== this._ready) {
       if(!this._readyOnce) {
         this._readyOnce = true;
@@ -424,7 +430,7 @@ var Model = EventSource.extend({
       this.trigger('hook_change');
       //get reader info
       var reader = data_hook.getPlainObject();
-      reader.formatters = this._getAllFormatters();
+      reader.parsers = this._getAllParsers();
 
       var lang = language_hook ? language_hook.id : 'en';
       var promise = new Promise();
@@ -501,7 +507,6 @@ var Model = EventSource.extend({
   afterLoad: function() {
     EventSource.unfreezeAll();
     this.setLoadingDone('_hook_data');
-    interpIndexes = {};
   },
 
   /**
@@ -817,14 +822,24 @@ getFrame: function(time){
     
     if(this.cachedFrames[cachePath][time]) return this.cachedFrames[cachePath][time];
     
+    if(time < steps[0] || time > steps[steps.length-1]){
+        //if the requested time point is out of the known range
+        //then send nulls in the response
+        var pValues = this.cachedFrames[cachePath][steps[0]];
+        var curr = {};
+        utils.forEach(pValues, function(keys, hook) {
+          curr[hook] = {};
+          utils.forEach(keys, function(val, key) {
+            curr[hook][key] = null;
+          });
+        });
+        return curr;
+    }
+    
+    
     var next = d3.bisectLeft(steps, time);
 
-    if(next === 0) {
-      return this.cachedFrames[cachePath][steps[0]];
-    }
-    if(next > steps.length) {
-      return this.cachedFrames[cachePath][steps[steps.length - 1]];
-    }
+    if(next === 0) return this.cachedFrames[cachePath][steps[0]];
 
     var fraction = (time - steps[next - 1]) / (steps[next] - steps[next - 1]);
 
@@ -925,30 +940,7 @@ getFrame: function(time){
     
 
 
-  /**
-   * gets the value of the hook point
-   * @param {Object} filter Id the row. e.g: {geo: "swe", time: "1999"}
-   * @returns hooked value
-   */
-  getValue: function(filter) {
-    //extract id from original filter
-    filter = utils.clone(filter, this._getAllDimensions());
-    if(!this.isHook()) {
-      utils.warn('getValue method needs the model to be hooked to data.');
-      return;
-    }
-    var value;
-    if(this.use === 'constant') {
-      value = this.which;
-    } else if(this._space.hasOwnProperty(this.use)) {
-      value = this._space[this.use][this.which];
-    } else {
-      //TODO: get meta info about translatable data
-      var method = globals.metadata.indicatorsDB[this.which].interpolation;
-      value = interpolateValue.call(this, filter, this.use, this.which, method);
-    }
-    return this.mapValue(value);
-  },
+
 
   /**
    * maps the value to this hook's specifications
@@ -1020,21 +1012,9 @@ getFrame: function(time){
    * Gets formatter for this model
    * @returns {Function|Boolean} formatter function
    */
-  getFormatter: function() {
-    // default formatter turns empty strings in null and converts numeric values into number
-    return function (val) {
-      var newVal = val;
-      if(val === ""){
-        newVal = null;
-      } else {
-        // check for numberic
-        var numericVal = parseFloat(val);
-        if (!isNaN(numericVal) && isFinite(val)) {
-          newVal = numericVal;
-        }
-      }  
-      return newVal;
-    }
+  getParser: function() {
+    //TODO: default formatter is moved to utils. need to return it to hook prototype class, but retest #1212 #1230 #1253
+    return null;
   },
 
   /**
@@ -1043,8 +1023,8 @@ getFrame: function(time){
    */
   tickFormatter: function(x, formatterRemovePrefix) {
 
-    //TODO: generalize for any time unit
-    if(utils.isDate(x)) return d3.time.format(time_formats["year"])(x);
+    // Assumption: a hook has always time in its space
+    if(utils.isDate(x)) return this._space.time.timeFormat(x);
     if(utils.isString(x)) return x;
 
     var format = "f";
@@ -1179,7 +1159,7 @@ getFrame: function(time){
         break;
     }
     //TODO: d3 is global?
-    this.scale = scaleType === 'time' ? d3.time.scale().domain(domain) : d3.scale[scaleType]().domain(domain);
+    this.scale = scaleType === 'time' ? d3.time.scale.utc().domain(domain) : d3.scale[scaleType]().domain(domain);
   },
 
   /**
@@ -1347,7 +1327,6 @@ getFrame: function(time){
   _getAllFilters: function(opts, splashScreen) {
     opts = opts || {};
     var filters = {};
-    var formatters = {};
     utils.forEach(this._space, function(h) {
       if(opts.exceptType && h.getType() === opts.exceptType) {
         return true;
@@ -1355,10 +1334,8 @@ getFrame: function(time){
       if(opts.onlyType && h.getType() !== opts.onlyType) {
         return true;
       }
-      formatters[h.dim] = h.getFormatter();
       filters = utils.extend(filters, h.getFilter(splashScreen));
     });
-    filters = utils.mapRows([filters], formatters)[0];
     return filters;
   },
 
@@ -1379,26 +1356,26 @@ getFrame: function(time){
    * gets all hook filters
    * @returns {Object} filters
    */
-  _getAllFormatters: function() {
+  _getAllParsers: function() {
 
-    var formatters = {};
+    var parsers = {};
 
-    function addFormatter(model) {
-      // get formatters from model
-      var formatter = model.getFormatter();
+    function addParser(model) {
+      // get parsers from model
+      var parser = model.getParser();
       var column = model.getDimensionOrWhich();
-      if (formatter && column) {
-        formatters[column] = formatter;
+      if (parser && column) {
+        parsers[column] = parser;
       }
     }
 
     // loop through all models which can have filters
     utils.forEach(this._space, function(h) {
-      addFormatter(h);
+      addParser(h);
     });
-    addFormatter(this);
+    addParser(this);
 
-    return formatters;
+    return parsers;
   },
 
   getDefaults: function() {
@@ -1588,69 +1565,6 @@ function getSpace(model) {
     );
   }
 }
-
-//caches interpolation indexes globally.
-//TODO: what if there are 2 visualizations with 2 data sources?
-var interpIndexes = {};
-
-
-
-/**
- * interpolates the specific value if missing
- * @param {Object} _filter Id the row. e.g: {geo: "swe", time: "1999"}
- * filter SHOULD contain time property
- * @returns interpolated value
- */
-function interpolateValue(_filter, use, which, method) {
-
-  var dimTime, time, filter, items, space_id, indexNext, result;
-
-  dimTime = this._getFirstDimension({
-    type: 'time'
-  });
-  time = new Date(_filter[dimTime]); //clone date
-  filter = utils.clone(_filter, null, dimTime);
-
-
-  items = this.getFilteredItems(filter);
-  if(items === null || items.length === 0) {
-    utils.warn('interpolateValue returns ' + which + ' = NULL because items array is empty in ' + JSON.stringify(filter));
-    return null;
-  }
-
-  // return constant for the use of "constant"
-  if(use === 'constant') {
-    return items[0][which];
-  }
-
-  // search where the desired value should fall between the known points
-  space_id = this._spaceId || (this._spaceId = Object.keys(this._space).join('-'));
-  interpIndexes[space_id] = interpIndexes[space_id] || {};
-
-  if(time in interpIndexes[space_id]) {
-    indexNext = interpIndexes[space_id][time].next;
-  } else {
-    indexNext = d3.bisectLeft(this.getUnique(dimTime), time);
-    //store indexNext
-    interpIndexes[space_id][time] = {
-      next: indexNext
-    };
-  }
-
-  // zero-order interpolation for the use of properties
-  if(use === 'property') {
-    return items[0][which];
-  }
-  // the rest is for the continuous measurements
-  // check if the desired value is out of range. 0-order extrapolation
-  if(indexNext === 0) {
-    return +items[0][which];
-  }
-  if(indexNext === items.length) {
-    return +items[items.length - 1][which];
-  }
-
-};
 
 
 

@@ -12,8 +12,7 @@
             width: auto;
             border: 0;
             .vzb-dialog-title>span:first-child {
-              display: block;            
-              font-size: .9em;    
+              display: block;     
               padding: 9px 15px 10px 10px;
               height: 40px;
               background-color: $vzb-color-primary-lightest;
@@ -33,7 +32,7 @@
             }
             &.vzb-accordion-active {
               max-height: 500px;
-              transition: all .3s ease-in-out;
+              transition: max-height .3s ease-in-out;
               .vzb-dialog-title>span:first-child::after {
                 @include rotate(135deg);
               }

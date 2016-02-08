@@ -232,10 +232,12 @@ function resolvePath(id, importer, options) {
 var buildLock = false;
 function buildJS(dev, cb) {
   buildLock = true;
+  var timestamp = new Date();
   getTemplates(function(templates) {
     var banner_str = ['/**',
       ' * ' + pkg.name + ' - ' + pkg.description,
       ' * @version v' + pkg.version,
+      ' * @build timestamp' + timestamp,
       ' * @link ' + pkg.homepage,
       ' * @license ' + pkg.license,
       ' */',
@@ -243,7 +245,7 @@ function buildJS(dev, cb) {
     ].join('\n');
 
     //var version = '; Vizabi._version = "' + pkg.version + '";';
-    var version = ';(function (Vizabi) {Vizabi._version = "' + pkg.version + '";})(typeof Vizabi !== "undefined"?Vizabi:{});';
+    var version = ';(function (Vizabi) {Vizabi._version = "' + pkg.version + '"; Vizabi._build = "' + timestamp.valueOf() + '";})(typeof Vizabi !== "undefined"?Vizabi:{});';
 
     var options = {
       format: 'umd',
@@ -374,6 +376,8 @@ gulp.task('preview:vendor', ['clean:preview:vendor'], function() {
   gulp.src(path.join(config.modules, 'font-awesome/fonts/*'))
     .pipe(gulp.dest(path.join(config.destPreview, 'assets/vendor/fonts')));
   gulp.src(path.join(config.modules, 'd3/d3.min.js'))
+    .pipe(gulp.dest(path.join(config.destPreview, 'assets/vendor/js')));
+  gulp.src(path.join(config.modules, 'vizabi-interpolators/interpolators.js'))
     .pipe(gulp.dest(path.join(config.destPreview, 'assets/vendor/js')));
 });
 

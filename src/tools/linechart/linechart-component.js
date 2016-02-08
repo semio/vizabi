@@ -132,7 +132,7 @@ var LCComponent = Component.extend({
     this.redrawDataPoints();
 
     this.graph
-      .on('mousemove', this.entityMousemove.bind(this, null, null, this, true))
+      .on('mousemove', this.entityMousemove.bind(this, null, null, this))
       .on('mouseleave', this.entityMouseout.bind(this, null, null, this));
   },
 
@@ -210,7 +210,7 @@ var LCComponent = Component.extend({
 
     var time_1 = (this.time === null) ? this.model.time.value : this.time;
     this.time = this.model.time.value;
-    this.duration = this.model.time.playing && (this.time - time_1 > 0) ? this.model.time.delayAnimations * .9 : 0;
+    this.duration = this.model.time.playing && (this.time - time_1 > 0) ? this.model.time.delayAnimations : 0;
 
     var timeDim = this.model.time.getDimension();
     var filter = {};
@@ -258,7 +258,7 @@ var LCComponent = Component.extend({
         margin: {
           top: 40,
           right: 60,
-          left: 55,
+          left: 65,
           bottom: 40
         },
         tick_spacing: 80,
@@ -270,7 +270,7 @@ var LCComponent = Component.extend({
         margin: {
           top: 50,
           right: 60,
-          left: 55,
+          left: 70,
           bottom: 50
         },
         tick_spacing: 100,
@@ -286,7 +286,7 @@ var LCComponent = Component.extend({
           top: 9,
           right: 15,
           bottom: 10,
-          left: 5
+          left: 10
         }
       },
       medium: {
@@ -294,7 +294,7 @@ var LCComponent = Component.extend({
           top: 9,
           right: 15,
           bottom: 10,
-          left: 5
+          left: 20
         }
       },
       large: {
@@ -302,7 +302,7 @@ var LCComponent = Component.extend({
           top: 9,
           right: 15,
           bottom: 10,
-          left: 10
+          left: 25
         }
       }
     };
@@ -366,6 +366,7 @@ var LCComponent = Component.extend({
     this.yAxis.scale(this.yScale)
       .labelerOptions({
         scaleType: this.model.marker.axis_y.scaleType,
+        timeFormat: this.model.time.timeFormat,
         toolMargin: {
           top: 0,
           right: this.margin.right,
@@ -379,6 +380,7 @@ var LCComponent = Component.extend({
     this.xAxis.scale(this.xScale)
       .labelerOptions({
         scaleType: this.model.marker.axis_x.scaleType,
+        timeFormat: this.model.time.timeFormat,
         toolMargin: this.margin,
         limitMaxTickNumber: this.activeProfile.limitMaxTickNumberX
           //showOuter: true
@@ -512,37 +514,39 @@ var LCComponent = Component.extend({
 
         // the following fixes the ugly line butts sticking out of the axis line
         //if(x[0]!=null && x[1]!=null) xy.splice(1, 0, [(+x[0]*0.99+x[1]*0.01), y[0]]);
+        var path2 = entity.select(".vzb-lc-line");
+        var totalLength = path2.node().getTotalLength();
 
         var path1 = entity.select(".vzb-lc-line-shadow")
+          .attr("stroke-dasharray", totalLength)
           .style("stroke", colorShadow)
           .attr("d", _this.line(xy));
-        var path2 = entity.select(".vzb-lc-line")
+        path2
           //.style("filter", "none")
+          .attr("stroke-dasharray", totalLength)
           .style("stroke", color)
           .attr("d", _this.line(xy));
 
-
         // this section ensures the smooth transition while playing and not needed otherwise
         if(_this.model.time.playing) {
-
-          var totalLength = path2.node().getTotalLength();
 
           if(_this.totalLength_1[d[KEY]] === null) {
             _this.totalLength_1[d[KEY]] = totalLength;
           }
 
           path1
-            .attr("stroke-dasharray", totalLength)
+            .interrupt()
             .attr("stroke-dashoffset", totalLength - _this.totalLength_1[d[KEY]])
             .transition()
+            .delay(0)
             .duration(_this.duration)
             .ease("linear")
             .attr("stroke-dashoffset", 0);
-
           path2
-            .attr("stroke-dasharray", totalLength)
+            .interrupt()
             .attr("stroke-dashoffset", totalLength - _this.totalLength_1[d[KEY]])
             .transition()
+            .delay(0)
             .duration(_this.duration)
             .ease("linear")
             .attr("stroke-dashoffset", 0);
@@ -668,19 +672,13 @@ var LCComponent = Component.extend({
     }
     var resolvedValue;
     var timeDim = _this.model.time.getDimension();
-    if(closestToMouse) {
-      var mousePos = mouse[1] - _this.margin.bottom;
-      var data = this.getValuesForYear(resolvedTime);
-      var nearestKey = this.getNearestKey(mousePos, data.axis_y, _this.yScale.bind(_this));
-      resolvedValue = data.axis_y[nearestKey];
-      if(!me) me = {};
-      me[KEY] = nearestKey;
-    } else {
-      var pointer = {};
-      pointer[KEY] = me[KEY];
-      pointer[timeDim] = resolvedTime;
-      resolvedValue = _this.model.marker.axis_y.getValue(pointer);
-    }
+    
+    var mousePos = mouse[1] - _this.margin.bottom;
+    var data = this.getValuesForYear(resolvedTime);
+    var nearestKey = this.getNearestKey(mousePos, data.axis_y, _this.yScale.bind(_this));
+    resolvedValue = data.axis_y[nearestKey];
+    if(!me) me = {};
+    me[KEY] = nearestKey;
 
     _this.hoveringNow = me;
 
@@ -765,7 +763,7 @@ var LCComponent = Component.extend({
 
   getValuesForYear: function(year) {
     if(!utils.isDate(year)) {
-      year = new Date('00:00:00 ' + year);
+      year = this.model.time.timeFormat.parse(year);
     }
     return this.model.marker.getValues({
       time: year

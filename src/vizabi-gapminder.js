@@ -90,8 +90,10 @@ BarChart.define('default_options', {
     }
   },
   data: {
-    reader: "csv",
-    path: globals.gapminder_paths.baseUrl + "data/waffles/dont-panic-poverty.csv"
+    reader: "waffle",
+    path: "http://waffle-server-dev.gapminderdev.org/api/graphs/stats/vizabi-tools"
+    //reader: "csv",
+    //path: globals.gapminder_paths.baseUrl + "data/waffles/dont-panic-poverty.csv"
   },
   language: language,
   ui: {
@@ -207,8 +209,8 @@ BubbleMap.define('default_options', {
         allow: {
           scales: ["linear", "log"]
         },
-        min: .04,
-        max: .90
+        domainMin: .04,
+        domainMax: .90
       },
       lat: {
         use: "property",
@@ -229,16 +231,43 @@ BubbleMap.define('default_options', {
     }
   },
   data: {
-    //reader: "waffle",
+    reader: "waffle",
+    path: "//waffle-server.gapminderdev.org/api/graphs/stats/vizabi-tools",
     //path: "http://waffle-server-dev.gapminderdev.org/api/graphs/stats/vizabi-tools",
-    reader: "csv",
-    path: globals.gapminder_paths.baseUrl + "data/waffles/dont-panic-poverty.csv",
+    //reader: "csv",
+    //path: globals.gapminder_paths.baseUrl + "data/waffles/dont-panic-poverty.csv",
     splash: true
   },
   language: language,
   ui: {
-    buttons: [],
-    dialogs: {popup: [], sidebar: [], moreoptions: []},
+    "buttons": [
+        "colors",
+        "find",
+        "size",
+        "moreoptions",
+        "fullscreen",
+        "presentation"
+    ],
+    "dialogs": {
+        "popup": [
+            "colors",
+            "find",
+            "size",
+            "moreoptions"
+        ],
+        "sidebar": [
+            "colors",
+            "find",
+            "size"
+        ],
+        "moreoptions": [
+            "opacity",
+            "speed",
+            "size",
+            "colors",
+            "presentation"
+        ]
+    },
     presentation: false
   }
 });
@@ -299,8 +328,8 @@ MountainChart.define('default_options', {
         use: "indicator",
         which: "gdp_p_cap_const_ppp2011_dollar",
         scaleType: 'log',
-        min: .11, //0
-        max: 500 //100
+        domainMin: .11, //0
+        domainMax: 500 //100
       },
       size: {
         use: "indicator",
@@ -329,15 +358,45 @@ MountainChart.define('default_options', {
   },
   language: language,
   data: {
-    //reader: "waffle",
+    reader: "waffle",
+    path: "//waffle-server.gapminderdev.org/api/graphs/stats/vizabi-tools",
     //path: "http://waffle-server-dev.gapminderdev.org/api/graphs/stats/vizabi-tools",
-    reader: "csv",
-    path: globals.gapminder_paths.baseUrl + "data/waffles/dont-panic-poverty.csv",
+    //reader: "csv",
+    //path: globals.gapminder_paths.baseUrl + "data/waffles/dont-panic-poverty.csv",
     splash: true
   },
   ui: {
-    buttons: [],
-    dialogs: {popup: [], sidebar: [], moreoptions: []},
+      "buttons": [
+          "colors",
+          "find",
+          "stack",
+          "show",
+          "moreoptions",
+          "fullscreen",
+          "presentation"
+      ],
+      "dialogs": {
+          "popup": [
+              "colors",
+              "find",
+              "stack",
+              "show",
+              "moreoptions"
+          ],
+          "sidebar": [
+              "colors",
+              "find",
+              "stack"
+          ],
+          "moreoptions": [
+              "opacity",
+              "speed",
+              "stack",
+              "axesmc",
+              "colors",
+              "presentation"
+          ]
+      },
     presentation: false
   }
 });
@@ -440,11 +499,11 @@ BubbleChart.define('default_options', {
       dim: "geo",
       show: {
         _defs_: {
-          "geo.cat": ["country"]
+          "geo.cat": ["country", "unstate"]
         }
       }
     },
-    marker: {                   
+    marker: {
       space: ["entities", "time"],
       type: "geometry",
       shape: "circle",
@@ -454,7 +513,7 @@ BubbleChart.define('default_options', {
       },
       axis_y: {
         use: "indicator",
-        which: "fertility_rate",
+        which: "child_mortality_rate_per1000",
         scaleType: "linear",
         allow: {
           scales: ["linear", "log"]
@@ -462,8 +521,8 @@ BubbleChart.define('default_options', {
       },
       axis_x: {
         use: "indicator",
-        which: "life_expectancy",
-        scaleType: "linear",
+        which: "gdp_p_cap_const_ppp2011_dollar",
+        scaleType: "log",
         allow: {
           scales: ["linear", "log"]
         }
@@ -483,15 +542,16 @@ BubbleChart.define('default_options', {
         allow: {
           scales: ["linear", "log"]
         },
-        min: .04,
-        max: .90
+        domainMin: .04,
+        domainMax: .90
       }
     }
   },
   data: {
     reader: "ddfcsv",
-    path: 'https://raw.githubusercontent.com/buchslava/ddf--gapminder--systema_globalis/master',
-    //reader: 'waffle',
+    path: "https://raw.githubusercontent.com/buchslava/ddf--gapminder--systema_globalis/master",
+    //reader: "waffle",
+    //path: "//waffle-server.gapminderdev.org/api/graphs/stats/vizabi-tools",
     //path: "http://waffle-server-dev.gapminderdev.org/api/graphs/stats/vizabi-tools",
     //reader: "csv",
     //path: globals.gapminder_paths.baseUrl + "data/waffles/dont-panic-poverty.csv",
@@ -511,8 +571,36 @@ BubbleChart.define('default_options', {
         dragging: true
       }
     },
-    buttons: [],
-    dialogs: {popup: [], sidebar: [], moreoptions: []},
+    "buttons": [
+        "colors",
+        "find",
+        "trails",
+        "lock",
+        "size",
+        "moreoptions",
+        "fullscreen"
+    ],
+    "dialogs": {
+        "popup": [
+            "colors",
+            "find",
+            "size",
+            "moreoptions"
+        ],
+        "sidebar": [
+            "colors",
+            "find",
+            "size"
+        ],
+        "moreoptions": [
+            "opacity",
+            "speed",
+            "axes",
+            "size",
+            "colors",
+            "presentation"
+        ]
+    },
     presentation: false
   }
 });
@@ -520,7 +608,9 @@ BubbleChart.define('default_options', {
 PopByAge.define('default_options', {
   state: {
     time: {
-      value: '2013'
+      value: '2013',
+      start: '1950',
+      end: '2100'
     },
     entities: {
       dim: "geo",
@@ -535,7 +625,7 @@ PopByAge.define('default_options', {
       show: {
         _defs_: {
           "age": [
-              [0, 150]
+              [0, 95]
             ] //show 0 through 100
         }
       },
@@ -553,7 +643,11 @@ PopByAge.define('default_options', {
       },
       axis_y: {
         use: "indicator",
-        which: "age"
+        which: "age",
+        // domain Max should be set manually as age max from entites_age plus one grouping value (95 + 5 = 100)
+        // that way the last age group fits in on the scale
+        domainMax: 100,
+        domainMin: 0
       },
       axis_x: {
         use: "indicator",
@@ -614,8 +708,10 @@ Tool.define("preload", function(promise) {
 
   var metadata_path = Vzb._globals.gapminder_paths.baseUrl + "data/waffles/metadata.json";
   var globals = Vzb._globals;
-
-
+    
+  Vzb._globals.version = Vzb._version;
+  Vzb._globals.build = Vzb._build;
+    
   //TODO: concurrent
   //load language first
   this.preloadLanguage().then(function() {
@@ -661,10 +757,10 @@ Tool.define("preload", function(promise) {
     var axis = _this.default_options.state.marker[hook];
     if(axis.use === "indicator" && globals.metadata.indicatorsDB[axis.which] && globals.metadata.indicatorsDB[axis.which].domain) {
       var domain = globals.metadata.indicatorsDB[axis.which].domain;
-      axis.min = axis.min || domain[0];
-      axis.max = axis.max || domain[1];
-      axis.fakeMin = axis.fakeMin || axis.min || domain[0];
-      axis.fakeMax = axis.fakeMax || axis.max || domain[1];
+      axis.domainMin = axis.domainMin || domain[0];
+      axis.domainMax = axis.domainMax || domain[1];
+      axis.zoomedMin = axis.zoomedMin || axis.domainMin || domain[0];
+      axis.zoomedMax = axis.zoomedMax || axis.domainMax || domain[1];
     }
   }
 

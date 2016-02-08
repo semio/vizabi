@@ -102,6 +102,12 @@ var ButtonList = Component.extend({
         statebind: "ui.presentation",
         statebindfunc: this.setPresentationMode.bind(this)
       },
+      'about': {
+        title: "buttons/about",
+        icon: "about",
+        required: false,
+        isgraph: false
+      },
       'axes': {
         title: "buttons/axes",
         icon: "axes",
@@ -158,6 +164,8 @@ var ButtonList = Component.extend({
         }
       }
     });
+    
+    this.validatePopupButtons(config.ui.buttons, config.ui.dialogs.popup);
 
     this._super(config, context);
 
@@ -181,9 +189,9 @@ var ButtonList = Component.extend({
     //     d3.select(this.root.element).classed("vzb-dialog-expand-true", true);
     // }
     
-    var button_list = [].concat(button_expand);
+    var button_list = [].concat(this.model.ui.buttons);
 
-    (this.model.ui.buttons||[]).forEach(function(button) {
+    (button_expand||[]).forEach(function(button) {
       if (button_list.indexOf(button) === -1) {
         button_list.push(button);
       }
@@ -228,6 +236,19 @@ var ButtonList = Component.extend({
     this.setBubbleLock();
     this.setPresentationMode();
 
+  },
+  
+  validatePopupButtons: function (buttons, popupDialogs) {
+    var _this = this;
+    var popupButtons = buttons.filter(function(d) {
+      return (!_this._available_buttons[d].func); 
+      });
+    for(var i = 0, j = popupButtons.length; i < j; i++) {
+       if(popupDialogs.indexOf(popupButtons[i]) == -1) {
+           return utils.error('Buttonlist: bad buttons config: "' + popupButtons[i] + '" is missing in popups list');
+       }
+    }
+    return false; //all good
   },
 
   /*
@@ -447,9 +468,9 @@ var ButtonList = Component.extend({
   toggleBubbleLock: function(id) {
     if(this.model.state.entities.select.length == 0) return;
 
-    var timeFormatter = d3.time.format(this.model.state.time.formatInput);
     var locked = this.model.state.time.lockNonSelected;
-    locked = locked ? 0 : timeFormatter(this.model.state.time.value);
+    var time = this.model.state.time;
+    locked = locked ? 0 : time.timeFormat(time.value);
     this.model.state.time.lockNonSelected = locked;
 
     this.setBubbleLock();

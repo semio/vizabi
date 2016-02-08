@@ -59,6 +59,13 @@ var MountainChartComponent = Component.extend({
                 _this._probe.redraw();
                 _this.updateDoubtOpacity();
             },
+            "change:time.playing": function (evt) {
+                // this listener is a patch for fixing #1228. time.js doesn't produce the last event
+                // with playing == false when paused softly
+                if(!_this.model.time.playing){
+                    _this.redrawDataPoints();
+                }
+            },
             "change:time.xScaleFactor": function () {
                 _this.ready();
             },
@@ -116,7 +123,7 @@ var MountainChartComponent = Component.extend({
                     _this.ready();
                     return;
                 }
-                if (path.indexOf("fakeMin") > -1 || path.indexOf("fakeMax") > -1) {
+                if (path.indexOf("zoomedMin") > -1 || path.indexOf("zoomedMax") > -1) {
                     _this.zoomToMaxMin();
                     _this.redrawDataPoints();
                     _this._probe.redraw();
@@ -226,8 +233,8 @@ var MountainChartComponent = Component.extend({
     afterPreload: function () {
         var _this = this;
 
-        var yearNow = _this.model.time.value.getFullYear();
-        var yearEnd = _this.model.time.end.getFullYear();
+        var yearNow = _this.model.time.value.getUTCFullYear();
+        var yearEnd = _this.model.time.end.getUTCFullYear();
 
         this._math.xScaleFactor = this.model.time.xScaleFactor;
         this._math.xScaleShift = this.model.time.xScaleShift;
@@ -239,7 +246,7 @@ var MountainChartComponent = Component.extend({
 
         if (!yMax || !shape || shape.length === 0) return;
 
-        this.xScale = d3.scale.log().domain([this.model.marker.axis_x.min, this.model.marker.axis_x.max]);
+        this.xScale = d3.scale.log().domain([this.model.marker.axis_x.domainMin, this.model.marker.axis_x.domainMax]);
         this.yScale = d3.scale.linear().domain([0, +yMax]);
 
         _this.updateSize(shape.length);
@@ -444,10 +451,10 @@ var MountainChartComponent = Component.extend({
     zoomToMaxMin: function(){
         var _this = this;
 
-        if(this.model.marker.axis_x.fakeMin==null || this.model.marker.axis_x.fakeMax==null) return;
+        if(this.model.marker.axis_x.zoomedMin==null || this.model.marker.axis_x.zoomedMax==null) return;
 
-        var x1 = this.xScale(this.model.marker.axis_x.fakeMin);
-        var x2 = this.xScale(this.model.marker.axis_x.fakeMax);
+        var x1 = this.xScale(this.model.marker.axis_x.zoomedMin);
+        var x2 = this.xScale(this.model.marker.axis_x.zoomedMax);
 
         this.rangeRatio = this.width / (x2 - x1) * this.rangeRatio;
         this.rangeShift = (this.rangeShift - x1) / (x2 - x1) * this.width;
@@ -494,7 +501,7 @@ var MountainChartComponent = Component.extend({
     },
 
     updateDoubtOpacity: function (opacity) {
-        if (opacity == null) opacity = this.wScale(+this.time.getFullYear().toString());
+        if (opacity == null) opacity = this.wScale(+this.time.getUTCFullYear().toString());
         if (this.someSelected) opacity = 1;
         this.dataWarningEl.style("opacity", opacity);
     },
@@ -671,7 +678,7 @@ var MountainChartComponent = Component.extend({
                 });
 
                 //position tooltip
-                _this._setTooltip(d.key ? _this.translator("region/" + d.key) : _this.model.marker.label.getValue(d));
+                _this._setTooltip(d.key ? _this.translator("region/" + d.key) : _this.values.label[d.KEY()]);
 
             },
             _mouseout: function (d, i) {
@@ -773,7 +780,7 @@ var MountainChartComponent = Component.extend({
         this.time = this.model.time.value;
         if (time == null) time = this.time;
 
-        this.year.setText(time.getFullYear().toString());
+        this.year.setText(time.getUTCFullYear().toString());
 
         this.values = this.model.marker.getFrame(time);
         this.yMax = 0;
@@ -1012,7 +1019,7 @@ var MountainChartComponent = Component.extend({
 
         // exporting shapes for shape preloader. is needed once in a while
         // if (!this.shapes) this.shapes = {}
-        // this.shapes[this.model.time.value.getFullYear()] = {
+        // this.shapes[this.model.time.value.getUTCFullYear()] = {
         //     yMax: d3.format(".2e")(_this.yMax),
         //     shape: _this.cached["all"].map(function (d) {return d3.format(".2e")(d.y);})
         // }
@@ -1055,7 +1062,7 @@ var MountainChartComponent = Component.extend({
         if (this.model.time.record) this._export.write({
             type: "path",
             id: key,
-            time: this.model.time.value.getFullYear(),
+            time: this.model.time.value.getUTCFullYear(),
             fill: this.cScale(this.values.color[key]),
             d: this.area(this.cached[key])
         });

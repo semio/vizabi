@@ -772,20 +772,29 @@ export var mapRows = function(original, formatters) {
       return res;
     }
   }
+   
+  // default formatter turns empty strings in null and converts numeric values into number
+  //TODO: default formatter is moved to utils. need to return it to hook prototype class, but retest #1212 #1230 #1253
+  var defaultFormatter = function (val) {
+      var newVal = val;
+      if(val === ""){
+        newVal = null;
+      } else {
+        // check for numberic
+        var numericVal = parseFloat(val);
+        if (!isNaN(numericVal) && isFinite(val)) {
+          newVal = numericVal;
+        }
+      }  
+      return newVal;
+  }
   
   original = original.map(function(row) {
     var columns = Object.keys(row);
       
     for(var i = 0; i < columns.length; i++) {
-      var col = columns[i], new_val;
-      if(formatters.hasOwnProperty(col)) { 
-        try {
-          new_val = mapRow(row[col], formatters[col]);
-        } catch(e) {
-          new_val = row[col];
-        }
-        row[col] = new_val;
-      }
+      var col = columns[i];
+      row[col] = mapRow(row[col], formatters[col] || defaultFormatter);
     }
     return row;
   });
@@ -1097,30 +1106,6 @@ export var diffObject = function(obj2, obj1) {
 };
 
 /*
- * Time formats
- */
-var timeFormats = {
-  "year": d3.time.format("%Y"),
-  "month": d3.time.format("%Y-%m"),
-  "week": d3.time.format("%Y-W%W"),
-  "day": d3.time.format("%Y-%m-%d"),
-  "hour": d3.time.format("%Y-%m-%d %H"),
-  "minute": d3.time.format("%Y-%m-%d %H:%M"),
-  "second": d3.time.format("%Y-%m-%d %H:%M:%S")
-};
-
-/*
- * Formats a Date Object to string format
- * @param {Date} date
- * @param {String} unit
- * @returns {String}
- */
-export var formatDate = function(date, unit) {
-  if(!d3) return date;
-  return timeFormats[unit](date);
-};
-
-/*
  * Returns the resulting object without _defs_ leveling
  * @param {Object} obj
  * @returns {Object}
@@ -1144,24 +1129,23 @@ export var flattenDefaults = function(obj) {
  * @param {Object} obj
  * @returns {Object}
  */
-export var flattenDates = function(obj) {
+export var flattenDates = function(obj, timeFormat) {
   var flattened = {};
   forEach(obj, function(val, key) {
     //todo: hack to flatten time unit objects to strings
     if(key === 'time') {
-      var unit = val.unit || "year";
       if(typeof val.value === 'object') {
-        val.value = formatDate(val.value, unit);
+        val.value = timeFormat(val.value);
       }
       if(typeof val.start === 'object') {
-        val.start = formatDate(val.start, unit);
+        val.start = timeFormat(val.start);
       }
       if(typeof val.end === 'object') {
-        val.end = formatDate(val.end, unit);
+        val.end = timeFormat(val.end);
       }
     }
     if(isPlainObject(val)) {
-      flattened[key] = flattenDates(val);
+      flattened[key] = flattenDates(val, timeFormat);
     } else {
       flattened[key] = val;
     }
@@ -1232,14 +1216,7 @@ export var nestArrayToObj = function(arr) {
  * @return {Number} y - interpolated value
  */
 //
-export var interpolator = {
-    linear: function(x1, x2, y1, y2, x) {
-      return +y1 + (y2 - y1) * (x - x1) / (x2 - x1);
-    },
-    exp: function(x1, x2, y1, y2, x) {
-      return Math.exp((Math.log(y1) * (x2 - x) - Math.log(y2) * (x1 - x)) / (x2 - x1));
-    }
-}
+export var interpolator = VizabiInterpolators;
 
 
 export var interpolateVector = function(){

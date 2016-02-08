@@ -28,8 +28,8 @@ export default Class.extend({
     //quit if the function is called accidentally
     if(!_this.model.time.trails || !_this.model.entities.select.length) return;
 
-    var start = +_this.timeFormatter(_this.model.time.start);
-    var end = +_this.timeFormatter(_this.model.time.end);
+    var start = +_this.model.time.timeFormat(_this.model.time.start);
+    var end = +_this.model.time.timeFormat(_this.model.time.end);
     var step = _this.model.time.step;
     var timePoints = [];
     for(var time = start; time <= end; time += step) timePoints.push(time);
@@ -40,7 +40,7 @@ export default Class.extend({
 
       var trailSegmentData = timePoints.map(function(m) {
         return {
-          t: _this.timeFormatter.parse("" + m)
+          t: _this.model.time.timeFormat.parse("" + m)
         }
       });
 
@@ -76,7 +76,7 @@ export default Class.extend({
           pointer.time = segment.t;
 
           _this._axisProjections(pointer);
-          var text = _this.timeFormatter(segment.t);
+          var text = _this.model.time.timeFormat(segment.t);
           var labelData = _this.entityLabels
             .filter(function(f) {
               return f[KEY] == pointer[KEY]
@@ -89,7 +89,7 @@ export default Class.extend({
             var y = _this.yScale(values.axis_y[pointer[KEY]]);
             var s = utils.areaToRadius(_this.sScale(values.size[pointer[KEY]]));
             _this._setTooltip(text, x, y, s);
-          } 
+          }
           //change opacity to OPACITY_HIGHLT = 1.0;
           d3.select(this).style("opacity", 1.0);
         })
@@ -109,7 +109,7 @@ export default Class.extend({
 
       trail.each(function(segment, index) {
         //update segment data (maybe for new indicators)
-        
+
         segment.valueY = _this.model.marker.getFrame(segment.t).axis_y[d[KEY]];
         segment.valueX = _this.model.marker.getFrame(segment.t).axis_x[d[KEY]];
         segment.valueS = _this.model.marker.getFrame(segment.t).size[d[KEY]];
@@ -164,6 +164,10 @@ export default Class.extend({
   _resize: function(trail, duration, d) {
     var _this = this.context;
 
+    if (_this.model.time.splash) {
+      return;
+    }
+
     trail.each(function(segment, index) {
 
       var view = d3.select(this);
@@ -176,7 +180,7 @@ export default Class.extend({
       var next = this.parentNode.childNodes[(index + 1)];
       if(next == null) return;
       next = next.__data__;
-        
+
       var lineLength = Math.sqrt(
           Math.pow(_this.xScale(segment.valueX) - _this.xScale(next.valueX),2) +
           Math.pow(_this.yScale(segment.valueY) - _this.yScale(next.valueY),2)
@@ -199,15 +203,15 @@ export default Class.extend({
     trail.each(function(segment, index) {
 
       var view = d3.select(this);
-        
+
       var strokeColor = _this.model.marker.color.which == "geo.region"?
         _this.model.marker.color.getColorShade({
-          colorID: segment.valueC, 
+          colorID: segment.valueC,
           shadeID: "shade"
         })
         :
         _this.cScale(segment.valueC);
-      
+
       view.select("circle")
         //.transition().duration(duration).ease("linear")
         .style("fill", _this.cScale(segment.valueC));
@@ -236,14 +240,14 @@ export default Class.extend({
     var KEY = _this.KEY;
 
     var firstVisible = true;
-    var trailStartTime = _this.timeFormatter.parse("" + d.trailStartTime);
+    var trailStartTime = _this.model.time.timeFormat.parse("" + d.trailStartTime);
 
     trail.each(function(segment, index) {
 
       // segment is transparent if it is after current time or before trail StartTime
       segment.transparent = (segment.t - _this.time >= 0) || (trailStartTime - segment.t > 0)
         //no trail segment should be visible if leading bubble is shifted backwards
-        || (d.trailStartTime - _this.timeFormatter(_this.time) >= 0);
+        || (d.trailStartTime - _this.model.time.timeFormat(_this.time) >= 0);
 
       if(firstVisible && !segment.transparent) {
         _this.cached[d[KEY]].labelX0 = segment.valueX;

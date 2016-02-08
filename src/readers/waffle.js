@@ -16,7 +16,7 @@ var WSReader = Reader.extend({
     this._name = 'waffle';
     this._data = [];
     this._basepath = reader_info.path;
-    this._formatters = reader_info.formatters;
+    this._parsers = reader_info.parsers;
     if (!this._basepath) {
       utils.error("Missing base path for graph reader");
     }
@@ -60,7 +60,7 @@ var WSReader = Reader.extend({
         }
 
         //format data
-        resp = utils.mapRows(uzip(resp.data || resp), _this._formatters);
+        resp = utils.mapRows(uzip(resp.data || resp), _this._parsers);
 
         //cache and resolve
         FILE_CACHED[path] = resp;
@@ -129,13 +129,6 @@ var WSReader = Reader.extend({
     // remove this condition when geo will be removed from params.where (when you need all geo props)
     if (_params.geo && _params.geo.length === 1 && _params.geo[0] === '*') {
       delete _params.geo;
-    }
-
-    // todo: formatting date according to precision (year, month, etc)
-    if (_params.time) {
-      _params.time[0] = _params.time[0].map(function (year) {
-        return typeof year === 'object' ? year.getFullYear() : year;
-      });
     }
 
     var result = [];
