@@ -182,7 +182,7 @@ var BubbleMapComponent = Component.extend({
         .translate([defaultWidth / 2, defaultHeight / 2]);
         //.precision(.1);*/
 
-    this.projection = d3.geo.albers()
+    var projection = this.projection = d3.geo.albers()
         .center([18.072038, 59.324914])
         .rotate([0, 0])
         .parallels([59, 60])
