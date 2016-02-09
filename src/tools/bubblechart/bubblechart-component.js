@@ -1127,12 +1127,12 @@ var BubbleChartComp = Component.extend({
 
 
       if(duration) {
-        if (!d.transitionInProgress) {
-          d.transitionInProgress = true;
+        //if (!d.transitionInProgress) {
+          //d.transitionInProgress = true;
           view.transition().duration(duration).ease("linear")
             .attr("cy", _this.yScale(valueY))
-            .attr("cx", _this.xScale(valueX))
-            .attr("r", scaledS)
+            .attr("cx", _this.xScale(valueX));
+            /*.attr("r", scaledS)
             .each("end", function() {
               d.transitionInProgress = false;
             });
@@ -1142,13 +1142,13 @@ var BubbleChartComp = Component.extend({
             .attr("cy", _this.yScale(valueY))
             .attr("cx", _this.xScale(valueX))
             .attr("r", scaledS);
-        }
+        }*/
       } else {
-        d.transitionInProgress = false;
+        //d.transitionInProgress = false;
         view.interrupt()
           .attr("cy", _this.yScale(valueY))
-          .attr("cx", _this.xScale(valueX))
-          .attr("r", scaledS);
+          .attr("cx", _this.xScale(valueX));
+          //.attr("r", scaledS);
       }
 
       if(this.model.time.record) _this._export.write({

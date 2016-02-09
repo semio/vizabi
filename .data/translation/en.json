@@ -80,7 +80,7 @@
     "indicator/forvarvsfrekvens": "Förvärvsfrekvens",
     "indicator/geo.kommun": "Kommun",
     "placeholder/search": "Search",
-    "unit/befolkning": "Invånare",
+    "unit/befolkning": "Antal invånare",
     "unit/medelinkomst": "SEK / år",
     "unit/flytt_utbildning": "",
     "unit/flytt_arbete": "",

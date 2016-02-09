@@ -179,7 +179,7 @@
             "interpolation": "exp",
             "scales": ["linear", "log"],
             "sourceLink": "",
-            "domain": [10, 100000]
+            "domain": [100, 10000]
         },
         "medelinkomst": {
             "allowCharts": ["bubblechart", "mountainchart", "bubblemap"],
@@ -256,7 +256,8 @@
                     {"id": "andel_hogskoleutbildade"},
                     {"id": "forvarvsfrekvens"},
                     {"id": "flytt_utbildning"},
-                    {"id": "flytt_arbete"}
+                    {"id": "flytt_arbete"},
+                    {"id": "befolkning"}
                 ]
             }, {
                 "id": "_default"
