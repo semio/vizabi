@@ -136,7 +136,9 @@ var DDFCSVReader = Reader.extend({
         return {
           geo: geoRecord.geo,
           'geo.name': geoRecord.name,
-          'geo.cat': queryDescriptor.category
+          'geo.cat': queryDescriptor.category,
+          'geo.latitude': geoRecord.latitude,
+          'geo.longitude': geoRecord.longitude
         }
       }
 

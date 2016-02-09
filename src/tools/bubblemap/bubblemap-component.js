@@ -172,16 +172,25 @@ var BubbleMapComponent = Component.extend({
     // http://bl.ocks.org/mbostock/d4021aa4dccfd65edffd patterson
     // http://bl.ocks.org/mbostock/3710566 robinson
     // map background
+
     var defaultWidth = this.defaultWidth;
     var defaultHeight = this.defaultHeight;
     var world = this.world;
-    var projection = this.projection = d3.geo.robinson()
-        .scale(150)
-        .translate([defaultWidth / 2, defaultHeight / 2])
-        .precision(.1);
+    
+    /*var projection = this.projection = d3.geo.mercator()
+        .scale(500)
+        .translate([defaultWidth / 2, defaultHeight / 2]);
+        //.precision(.1);*/
+
+    this.projection = d3.geo.albers()
+        .center([18.072038, 59.324914])
+        .rotate([0, 0])
+        .parallels([59, 60])
+        .scale(10000)
+        .translate([defaultWidth / 2, defaultHeight / 2]);
 
     var path = this.bgPath = d3.geo.path()
-        .projection(projection);
+        .projection(this.projection);
 
     var graticule = d3.geo.graticule();
 
@@ -210,13 +219,24 @@ var BubbleMapComponent = Component.extend({
         .attr("d", path);
     */
 
-    svg.insert("path", ".graticule")
+    
+    /*svg.insert("path", ".graticule")
         .datum(topojson.feature(world, world.objects.land))
         .attr("class", "land")
         .attr("d", path);
 
     svg.insert("path", ".graticule")
         .datum(topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }))
+        .attr("class", "boundary")
+        .attr("d", path);*/
+
+    svg.insert("path", ".graticule")
+        .datum(topojson.feature(world, world.objects.counties))
+        .attr("class", "land")
+        .attr("d", path);
+
+    svg.insert("path", ".graticule")
+        .datum(topojson.mesh(world, world.objects.municipalities, function(a, b) { return a !== b; }))
         .attr("class", "boundary")
         .attr("d", path);
   },

@@ -192,7 +192,7 @@ BubbleMap.define('default_options', {
       opacityRegular: 1,
       show: {
         _defs_: {
-          "geo.cat": ["basomrade"]
+          "geo.cat": ["kommun"]
         }
       },
     },
@@ -222,7 +222,7 @@ BubbleMap.define('default_options', {
       },
       color: {
         use: "property",
-        which: "geo.kommun",
+        which: "geo.name",
         scaleType: "ordinal",
         allow: {
           names: ["!geo.name"]
@@ -238,7 +238,7 @@ BubbleMap.define('default_options', {
     //path: "http://waffle-server-dev.gapminderdev.org/api/graphs/stats/vizabi-tools",
     //reader: "csv",
     //path: globals.gapminder_paths.baseUrl + "data/waffles/dont-panic-poverty.csv",
-    splash: true
+    splash: false
   },
   language: language,
   ui: {
@@ -695,7 +695,7 @@ MCComponent.define("preload", function(done) {
 //preloading bubble map country shapes
 BMComponent.define("preload", function(done) {
   //var shape_path = globals.gapminder_paths.baseUrl + "data/world-50m.json";
-  var shape_path = globals.gapminder_paths.baseUrl + "data/sodertornsmodellen/ddf--sodertornsmodellen--testing2016/geojson/topojson.json";
+  var shape_path = globals.gapminder_paths.baseUrl + "data/sodertornsmodellen/sthlm.json";
 
   d3.json(shape_path, function(error, json) {
     if(error) return console.warn("Failed loading json " + shape_path + ". " + error);

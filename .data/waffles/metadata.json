@@ -179,7 +179,7 @@
             "interpolation": "exp",
             "scales": ["linear", "log"],
             "sourceLink": "",
-            "domain": [100, 10000]
+            "domain": [100, 100000]
         },
         "medelinkomst": {
             "allowCharts": ["bubblechart", "mountainchart", "bubblemap"],
@@ -249,17 +249,15 @@
             }, {
                 "id": "_properties",
                 "children": [{"id": "geo"}, {"id": "geo.name"}, {"id": "geo.kommun"}, {"id": "size"}]
-            }, {
-                "id": "sodertornsmodellen",
-                "children": [
+            }, 
                     {"id": "medelinkomst"}, 
                     {"id": "andel_hogskoleutbildade"},
                     {"id": "forvarvsfrekvens"},
                     {"id": "flytt_utbildning"},
                     {"id": "flytt_arbete"},
-                    {"id": "befolkning"}
-                ]
-            }, {
+                    {"id": "befolkning"},
+                
+            {
                 "id": "_default"
             }
         ]
