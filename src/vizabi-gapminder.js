@@ -232,7 +232,7 @@ BubbleMap.define('default_options', {
   },
   data: {
     reader: "ddfcsv",
-    path: globals.gapminder_paths.baseUrl + "/data/sodertornsmodellen/ddf--sodertornsmodellen--testing2016",
+    path: globals.gapminder_paths.baseUrl + "data/sodertornsmodellen/ddf--sodertornsmodellen--testing2016",
     //reader: "waffle",
     //path: "//waffle-server.gapminderdev.org/api/graphs/stats/vizabi-tools",
     //path: "http://waffle-server-dev.gapminderdev.org/api/graphs/stats/vizabi-tools",
