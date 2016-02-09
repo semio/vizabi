@@ -186,7 +186,7 @@ var BubbleMapComponent = Component.extend({
         .center([18.072038, 59.324914])
         .rotate([0, 0])
         .parallels([59, 60])
-        .scale(10000)
+        .scale(15000)
         .translate([defaultWidth / 2, defaultHeight / 2]);
 
     var path = this.bgPath = d3.geo.path()
