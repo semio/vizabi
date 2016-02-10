@@ -231,16 +231,43 @@ BubbleMap.define('default_options', {
     }
   },
   data: {
-    //reader: "waffle",
+    reader: "waffle",
+    path: "//waffle-server.gapminderdev.org/api/graphs/stats/vizabi-tools",
     //path: "http://waffle-server-dev.gapminderdev.org/api/graphs/stats/vizabi-tools",
-    reader: "csv",
-    path: globals.gapminder_paths.baseUrl + "data/waffles/dont-panic-poverty.csv",
+    //reader: "csv",
+    //path: globals.gapminder_paths.baseUrl + "data/waffles/dont-panic-poverty.csv",
     splash: true
   },
   language: language,
   ui: {
-    buttons: [],
-    dialogs: {popup: [], sidebar: [], moreoptions: []},
+    "buttons": [
+        "colors",
+        "find",
+        "size",
+        "moreoptions",
+        "fullscreen",
+        "presentation"
+    ],
+    "dialogs": {
+        "popup": [
+            "colors",
+            "find",
+            "size",
+            "moreoptions"
+        ],
+        "sidebar": [
+            "colors",
+            "find",
+            "size"
+        ],
+        "moreoptions": [
+            "opacity",
+            "speed",
+            "size",
+            "colors",
+            "presentation"
+        ]
+    },
     presentation: false
   }
 });
@@ -331,15 +358,45 @@ MountainChart.define('default_options', {
   },
   language: language,
   data: {
-    //reader: "waffle",
+    reader: "waffle",
+    path: "//waffle-server.gapminderdev.org/api/graphs/stats/vizabi-tools",
     //path: "http://waffle-server-dev.gapminderdev.org/api/graphs/stats/vizabi-tools",
-    reader: "csv",
-    path: globals.gapminder_paths.baseUrl + "data/waffles/dont-panic-poverty.csv",
+    //reader: "csv",
+    //path: globals.gapminder_paths.baseUrl + "data/waffles/dont-panic-poverty.csv",
     splash: true
   },
   ui: {
-    buttons: [],
-    dialogs: {popup: [], sidebar: [], moreoptions: []},
+      "buttons": [
+          "colors",
+          "find",
+          "stack",
+          "show",
+          "moreoptions",
+          "fullscreen",
+          "presentation"
+      ],
+      "dialogs": {
+          "popup": [
+              "colors",
+              "find",
+              "stack",
+              "show",
+              "moreoptions"
+          ],
+          "sidebar": [
+              "colors",
+              "find",
+              "stack"
+          ],
+          "moreoptions": [
+              "opacity",
+              "speed",
+              "stack",
+              "axesmc",
+              "colors",
+              "presentation"
+          ]
+      },
     presentation: false
   }
 });
@@ -492,7 +549,8 @@ BubbleChart.define('default_options', {
   },
   data: {
     reader: "waffle",
-    path: "http://waffle-server-dev.gapminderdev.org/api/graphs/stats/vizabi-tools",
+    path: "//waffle-server.gapminderdev.org/api/graphs/stats/vizabi-tools",
+    //path: "http://waffle-server-dev.gapminderdev.org/api/graphs/stats/vizabi-tools",
     //reader: "csv",
     //path: globals.gapminder_paths.baseUrl + "data/waffles/dont-panic-poverty.csv",
     splash: true
@@ -511,8 +569,36 @@ BubbleChart.define('default_options', {
         dragging: true
       }
     },
-    buttons: [],
-    dialogs: {popup: [], sidebar: [], moreoptions: []},
+    "buttons": [
+        "colors",
+        "find",
+        "trails",
+        "lock",
+        "size",
+        "moreoptions",
+        "fullscreen"
+    ],
+    "dialogs": {
+        "popup": [
+            "colors",
+            "find",
+            "size",
+            "moreoptions"
+        ],
+        "sidebar": [
+            "colors",
+            "find",
+            "size"
+        ],
+        "moreoptions": [
+            "opacity",
+            "speed",
+            "axes",
+            "size",
+            "colors",
+            "presentation"
+        ]
+    },
     presentation: false
   }
 });
@@ -520,7 +606,9 @@ BubbleChart.define('default_options', {
 PopByAge.define('default_options', {
   state: {
     time: {
-      value: '2013'
+      value: '2013',
+      start: '1950',
+      end: '2100'
     },
     entities: {
       dim: "geo",
@@ -535,7 +623,7 @@ PopByAge.define('default_options', {
       show: {
         _defs_: {
           "age": [
-              [0, 150]
+              [0, 95]
             ] //show 0 through 100
         }
       },
@@ -553,7 +641,11 @@ PopByAge.define('default_options', {
       },
       axis_y: {
         use: "indicator",
-        which: "age"
+        which: "age",
+        // domain Max should be set manually as age max from entites_age plus one grouping value (95 + 5 = 100)
+        // that way the last age group fits in on the scale
+        domainMax: 100,
+        domainMin: 0
       },
       axis_x: {
         use: "indicator",

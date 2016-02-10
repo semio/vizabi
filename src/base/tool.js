@@ -76,7 +76,6 @@ var Tool = Component.extend({
     options = options || {}; //options can be undefined
     options.bind = options.bind || {}; //bind functions can be undefined
 
-    this.default_options = this.default_options || {};
     
     //bind the validation function with the tool
     var validate = this.validate.bind(this);
@@ -89,7 +88,7 @@ var Tool = Component.extend({
           _this.model.validate();
 
           if (evt.source.persistent)
-            _this.model.trigger(new DefaultEvent(evt.source, 'persistentChange'), _this.getMinState());
+            _this.model.trigger(new DefaultEvent(evt.source, 'persistentChange'), _this.getMinModel());
         }
       },
       'change:ui.presentation': function() {
@@ -119,6 +118,12 @@ var Tool = Component.extend({
 
     this.model = new ToolModel(this.name, options, this.default_options, callbacks, validate);
 
+    // default options are the options set in the tool
+    this.default_options = this.default_options || {};
+
+    // external options are the options received from the external page
+    this.external_options = options || {};
+
     this.ui = this.model.ui || {};
 
     this.layout = new Layout(this.ui);
@@ -132,15 +137,19 @@ var Tool = Component.extend({
     this._setUIOptions();
   },
 
-  getMinState: function() {
-    var state = this.model.state.getPlainObject(true); // true = get only persistent model values
-    var d_state = this.default_options.state;
+  getMinModel: function() {
+    var toolModel = this.model.getPlainObject(true); // true = get only persistent model values
+    var d_toolModel = this.default_options;
     //flattens _defs_ object
-    d_state = utils.flattenDefaults(d_state);
+    d_toolModel = utils.flattenDefaults(d_toolModel);
     //compares with chart default options
-    var d = utils.flattenDates(utils.diffObject(state, d_state), this.model.state.time.timeFormat);
+    var d = utils.diffObject(toolModel, d_toolModel);
+    // compares with chart external options.
+    // TODO: commented out for now because external options includes URL options. URL options should not be excluded from MinModel but other external options should.
+    // d = utils.flattenDates(utils.diffObject(d, this.external_options), this.model.state.time.timeFormat);
+    d = utils.flattenDates(d, this.model.state.time.timeFormat);
     //compares with model's defaults
-    return utils.diffObject(d, this.model.state.getDefaults());
+    return utils.diffObject(d, this.model.getDefaults());
   },
 
   /**

@@ -39,7 +39,6 @@ var TimeModel = Model.extend({
     loop: false,
     round: 'round',
     delay: 300,
-    delayAnimations: 300,
     delayStart: 1200,
     delayEnd: 75,
     delayThresholdX2: 300,
@@ -81,6 +80,7 @@ var TimeModel = Model.extend({
     this.dragging = false;
     this.postponePause = false;
     this.allSteps = {};
+    this.delayAnimations = this.delay;
 
     //bing play method to model change
     this.on({
@@ -153,7 +153,7 @@ var TimeModel = Model.extend({
     }
 
     if(this.step < 1) {
-      this.step = "year";
+      this.step = 1;
     }
 
     //make sure dates are transformed into dates at all times
@@ -163,13 +163,13 @@ var TimeModel = Model.extend({
 
     //end has to be >= than start
     if(this.end < this.start) {
-      this.end = this.start;
+      this.end = new Date(this.start);
     }
     //value has to be between start and end
     if(this.value < this.start) {
-      this.value = this.start;
+      this.value = new Date(this.start);
     } else if(this.value > this.end) {
-      this.value = this.end;
+      this.value = new Date(this.end);
     }
 
     if(this.playable === false && this.playing === true) {
@@ -211,7 +211,23 @@ var TimeModel = Model.extend({
    * @returns range between start and end
    */
   getRange: function() {
-    return d3.time[this.unit].utc.range(this.start, this.end, this.step);
+    var is = this.getIntervalAndStep();
+    return d3.time[is.interval].utc.range(this.start, this.end, is.step);
+  },
+
+  /** 
+   * gets the d3 interval and stepsize for d3 time interval methods
+   * D3's week-interval starts on sunday and it does not support a quarter interval
+   * 
+   **/
+  getIntervalAndStep: function() {
+    var d3Interval, step;
+    switch (this.unit) {
+      case 'week': d3Interval = 'monday'; step = this.step; break;
+      case 'quarter': d3Interval = 'month'; step = this.step*3; break;
+      default: d3Interval = this.unit; step = this.step; break;
+    }
+    return { interval: d3Interval, step: step };
   },
 
   /**
@@ -255,8 +271,9 @@ var TimeModel = Model.extend({
     this.allSteps[hash] = [];
     var curr = this.start;
     while(curr <= this.end) {
+      var is = this.getIntervalAndStep();
       this.allSteps[hash].push(curr);
-      curr = d3.time[this.unit].utc.offset(curr, this.step);
+      curr = d3.time[is.interval].utc.offset(curr, is.step);
     }
     return this.allSteps[hash];
   },
@@ -271,7 +288,8 @@ var TimeModel = Model.extend({
     var op = 'round';
     if(this.round === 'ceil') op = 'ceil';
     if(this.round === 'floor') op = 'floor';
-    var time = d3.time[this.unit].utc[op](this[what]);
+    var is = this.getIntervalAndStep();
+    var time = d3.time[is.interval].utc[op](this[what]);
     this.set(what, time, true); //3rd argumennt forces update
   },
 
@@ -283,12 +301,10 @@ var TimeModel = Model.extend({
     if(!this.playable) return;
 
     var _this = this;
-    var time = this.value;
 
     //go to start if we start from end point
-    if(_this.end - time <= 0) {
-      time = this.start;
-      _this.value = time;
+    if(this.value >= this.end) {
+      _this.getModelObject('value').set(_this.start, null, false /*make change non-persistent for URL and history*/);
     } else {
       //the assumption is that the time is already snapped when we start playing
       //because only dragging the timeslider can un-snap the time, and it snaps on drag.end
@@ -306,16 +322,17 @@ var TimeModel = Model.extend({
   playInterval: function(){
     if(!this.playing) return;
     var _this = this;
-    var time = this.value;
     this.delayAnimations = this.delay;
     if(this.delay < this.delayThresholdX2) this.delayAnimations*=2;
     if(this.delay < this.delayThresholdX4) this.delayAnimations*=2;
 
     this._intervals.setInterval('playInterval_' + this._id, function() {
-      if(time >= _this.end) {
+      // when time is playing and it reached the end
+      if(_this.value >= _this.end) {
+        // if looping
         if(_this.loop) {
-          time = _this.start;
-          _this.value = time
+          // reset time to start, silently
+          _this.getModelObject('value').set(_this.start, null, false /*make change non-persistent for URL and history*/);
         } else {
           _this.playing = false;
         }
@@ -329,11 +346,16 @@ var TimeModel = Model.extend({
           _this.postponePause = false;
           _this.getModelObject('value').set(_this.value, true, true /*force the change and make it persistent for URL and history*/);
         } else {
-          var step = _this.step;
-          if(_this.delay < _this.delayThresholdX2) step*=2;
-          if(_this.delay < _this.delayThresholdX4) step*=2;
-          time = d3.time[_this.unit].utc.offset(time, step);
-          _this.getModelObject('value').set(time, null, false /*make change non-persistent for URL and history*/);
+          var is = _this.getIntervalAndStep();
+          if(_this.delay < _this.delayThresholdX2) is.step*=2;
+          if(_this.delay < _this.delayThresholdX4) is.step*=2;
+          var time = d3.time[is.interval].utc.offset(_this.value, is.step);
+          if(time >= _this.end) {
+            // if no playing needed anymore then make the last update persistent and not overshooting
+            _this.getModelObject('value').set(_this.end, null, true /*force the change and make it persistent for URL and history*/);
+          }else{
+            _this.getModelObject('value').set(time, null, false /*make change non-persistent for URL and history*/);
+          }
           _this.playInterval();
         }
       }
