@@ -45,9 +45,9 @@ globals.gapminder_paths = {
 BarChart.define('default_options', {
   state: {
     time: {
-      start: "1800",
-      end: "2012",
-      value: "2000",
+      start: "2000",
+      end: "2013",
+      value: "2013",
       step: 1,
       formatInput: "%Y"
     },
@@ -55,8 +55,9 @@ BarChart.define('default_options', {
       dim: "geo",
       show: {
         _defs_: {
-          "geo": ["usa", "swe", "nor"],
-          "geo.cat": ["country", "unstate"]
+          //"geo.kommun": ["haninge", "tyreso"],
+          "geo.cat": ["kommun"],
+          //"geo": ["5120840","5110270","5130820","5120930","5110311","5140642","5140712","5120970","5120950","5110490","5110480","5130810","5120940","5120780","5120730","5130830","5120910","5140110","5140711","5140641","5140650","5140690","5110150","5120750","5110280","5110460","5120790","5110420","5120810","5110290","5110450","5140620","5120830","5110410","5120820","5110320","5140660","5110240","5110430","5110110","5110312","5110160","5110120","5110260","5120920","5140691"]
         }
       }
     },
@@ -68,7 +69,7 @@ BarChart.define('default_options', {
       },
       axis_y: {
         use: "indicator",
-        which: "population",
+        which: "medelinkomst",
         scaleType: "log",
         allow: {
           scales: ["linear", "log"]
@@ -84,14 +85,16 @@ BarChart.define('default_options', {
       },
       color: {
         use: "property",
-        which: "geo.region",
+        which: "geo.name",
         scaleType: "ordinal"
       }
     }
   },
   data: {
-    reader: "waffle",
-    path: "http://waffle-server-dev.gapminderdev.org/api/graphs/stats/vizabi-tools"
+    //reader: "waffle",
+    //path: "http://waffle-server-dev.gapminderdev.org/api/graphs/stats/vizabi-tools"
+    reader: "ddfcsv",
+    path: globals.gapminder_paths.baseUrl + "data/sodertornsmodellen/ddf--sodertornsmodellen--testing2016"
     //reader: "csv",
     //path: globals.gapminder_paths.baseUrl + "data/waffles/dont-panic-poverty.csv"
   },

@@ -226,6 +226,24 @@
             "sourceLink": "",
             "domain": [-1000, 1000]
         },
+        "flytt_arbete_p_cap": {
+            "allowCharts": ["bubblechart", "mountainchart", "bubblemap"],
+            "use": "indicator",
+            "unit": "flytt_arbete_p_cap",
+            "interpolation": "exp",
+            "scales": ["linear", "log"],
+            "sourceLink": "",
+            "domain": [-50, 50]
+        },
+        "flytt_utbildning_p_cap": {
+            "allowCharts": ["bubblechart", "mountainchart", "bubblemap"],
+            "use": "indicator",
+            "unit": "flytt_utbildning_p_cap",
+            "interpolation": "exp",
+            "scales": ["linear", "log"],
+            "sourceLink": "",
+            "domain": [-20, 20]
+        },
         "geo.kommun": {
             "allowCharts": ["*"],
             "use": "property",
@@ -255,6 +273,8 @@
                     {"id": "forvarvsfrekvens"},
                     {"id": "flytt_utbildning"},
                     {"id": "flytt_arbete"},
+                    {"id": "flytt_utbildning_p_cap"},
+                    {"id": "flytt_arbete_p_cap"},
                     {"id": "befolkning"},
                 
             {
