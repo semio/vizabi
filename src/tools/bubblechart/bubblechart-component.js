@@ -22,7 +22,7 @@ var BubbleChartComp = Component.extend({
   /**
    * Initializes the component (Bubble Chart).
    * Executed once before any template is rendered.
-   * @param {Object} config The options passed to the component
+   * @param {Object} config The config passed to the component
    * @param {Object} context The component's parent
    */
   init: function(config, context) {
@@ -630,7 +630,7 @@ var BubbleChartComp = Component.extend({
     //enter selection -- init circles
     this.entityBubbles.enter().append("circle")
       .attr("class", function(d) {
-        return "vzb-bc-entity " + d[KEY];
+        return "vzb-bc-entity " + "bubble-" + d[KEY];
       })
       .on("mouseover", function(d, i) {
         if(utils.isTouchDevice()) return;
@@ -661,9 +661,9 @@ var BubbleChartComp = Component.extend({
       });
 
     this.entityTrails.enter().insert("g", function(d) {
-      return document.querySelector(".vzb-bc-bubbles ." + d[KEY].replace("trail-", ""));
+      return document.querySelector(".vzb-bc-bubbles ." + d[KEY].replace("trail-", "bubble-"));
     }).attr("class", function(d) {
-      return "vzb-bc-entity" + " " + d[KEY]
+      return "vzb-bc-entity " + d[KEY]
     });
 
   },
