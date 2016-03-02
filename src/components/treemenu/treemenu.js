@@ -1,7 +1,6 @@
-import { extend, pruneTree, isTouchDevice } from 'base/utils';
+import * as utils from 'base/utils';
 import Component from 'base/component';
 import Class from 'class';
-import globals from 'base/globals';
 import {close as iconClose} from 'base/iconset';
 
 /*!
@@ -324,12 +323,12 @@ var MenuItem = Class.extend({
       this.submenu = new Menu(this, submenu);
     }
     this.entity.on('mouseenter', function() {
-      if(isTouchDevice()) return;
+      if(utils.isTouchDevice()) return;
       if (_this.parentMenu.direction == MENU_HORIZONTAL) {
         _this.openSubmenu();
       }
     }).on('click', function() {
-      if(isTouchDevice()) return;
+      if(utils.isTouchDevice()) return;
       d3.event.stopPropagation();
       _this.toggleSubmenu();
     }).onTap(function() {
@@ -478,7 +477,7 @@ var TreeMenu = Component.extend({
     //contructor is the same as any component
     this._super(config, context);
 
-    this.ui = extend({
+    this.ui = utils.extend({
       //...add properties here
     }, this.ui);
 
@@ -586,10 +585,10 @@ var TreeMenu = Component.extend({
           this.clearPos();
         } else {
           if( this.wrapper.node().offsetTop < 0) {
-            this.wrapper.style('bottom', (this.height - containerHeight - 10) + 'px');
+            this.wrapper.style('top', '10px'); 
           }
           if(this.height - _this.wrapper.node().offsetTop - containerHeight < 0) {
-            this.wrapper.style('bottom', '10px');
+            this.wrapper.style('top', (this.height - containerHeight - 10) + 'px');
           }
         }
       }
@@ -656,9 +655,8 @@ var TreeMenu = Component.extend({
     var rect = this.wrapper.node().getBoundingClientRect();      
     
     if(top) {
-      var bottom = this.element.node().offsetHeight - top - rect.height;
-      this.wrapper.style({'bottom': bottom + 'px', 'top': 'auto'});
-      this.wrapper.classed(css.absPosVert, bottom);
+      this.wrapper.style({'top': top + 'px', 'bottom': 'auto'});
+      this.wrapper.classed(css.absPosVert, top);
     }
     if(left) {
       var right = this.element.node().offsetWidth - left - rect.width; 
@@ -764,9 +762,9 @@ var TreeMenu = Component.extend({
     if(data == null) data = tree;
     this.wrapper.select('ul').remove();
 
-    var indicatorsDB = globals.metadata.indicatorsDB;
+    var indicatorsDB = _this.model.marker.getMetadata();         
 
-    var allowedIDs = globals.metadata.indicatorsArray.filter(function(f) {
+    var allowedIDs = utils.keys(indicatorsDB).filter(function(f) {
       //check if indicator is denied to show with allow->names->!indicator
       if(_this.model.marker[markerID].allow && _this.model.marker[markerID].allow.names
         && _this.model.marker[markerID].allow.names.indexOf('!' + f) != -1) return false;
@@ -783,7 +781,7 @@ var TreeMenu = Component.extend({
       return false;
     })
 
-    var dataFiltered = pruneTree(data, function(f) {
+    var dataFiltered = utils.pruneTree(data, function(f) {
       return allowedIDs.indexOf(f.id) > -1
     });
 
@@ -896,7 +894,7 @@ var TreeMenu = Component.extend({
     this.langStrings(strings)
       .lang(languageID)
       .callback(setModel)
-      .tree(globals.metadata.indicatorsTree)
+      .tree(this.model.marker.getIndicatorsTree())
       .redraw();
 
     return this;
@@ -904,7 +902,7 @@ var TreeMenu = Component.extend({
 
   _setModel: function(what, value, markerID) {
 
-    var indicatorsDB = globals.metadata.indicatorsDB;
+    var indicatorsDB = this.model.marker.getMetadata();
 
     var mdl = this.model.marker[markerID];
 
