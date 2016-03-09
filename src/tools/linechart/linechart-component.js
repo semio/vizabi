@@ -61,15 +61,17 @@ var LCComponent = Component.extend({
     this.timeUpdatedOnce = false;
     this.sizeUpdatedOnce = false;
 
+    var externalUiModel = this.ui["vzb-tool-" + this.name].getPlainObject();
+      
     // default UI settings
     this.ui = utils.extend({
       entity_labels: {},
       whenHovering: {}
-    }, this.ui["vzb-tool-" + this.name]);
+    }, externalUiModel);
 
     this.ui.entity_labels = utils.extend({
       min_number_of_entities_when_values_hide: 10
-    }, this.ui.entity_labels);
+    }, externalUiModel.entity_labels);
 
     this.ui.whenHovering = utils.extend({
       hideVerticalNow: true,
@@ -222,7 +224,7 @@ var LCComponent = Component.extend({
 
     this.data = this.model.marker.getKeys(filter);
     this.values = this.model.marker.getFrame(this.time);
-    this.prev_steps = this.all_steps.filter(function(f){return f < _this.time;});
+    this.prev_steps = this.all_steps.filter(function(f){return f <= _this.time;});
 
     this.entityLines = this.linesContainer.selectAll('.vzb-lc-entity').data(this.data);
     this.entityLabels = this.labelsContainer.selectAll('.vzb-lc-entity').data(this.data);

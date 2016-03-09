@@ -123,12 +123,32 @@ var EntitiesModel = Model.extend({
     } else {
       var added = {};
       added[dimension] = value;
-      added["labelOffset"] = [0, 0];
       if(timeDim && timeFormatter) {
         added["trailStartTime"] = timeFormatter(d[timeDim]);
       }
       this.select = (this._multiple) ? this.select.concat(added) : [added];
     }
+  },
+    
+  /**
+   * Select all entities
+   */
+  selectAll: function(timeDim, timeFormatter) {
+    if(!this._multiple) return;
+    
+    var added,
+      dimension = this.getDimension();
+    
+    var select = this._visible.map(function(d) {
+      added = {};
+      added[dimension] = d[dimension];
+      if(timeDim && timeFormatter) {
+        added["trailStartTime"] = timeFormatter(d[timeDim]);
+      }
+      return added;
+    });
+
+    this.select = select;
   },
     
   /**
@@ -158,12 +178,14 @@ var EntitiesModel = Model.extend({
   },
 
   setLabelOffset: function(d, xy) {
+    if(xy[0]===0 && xy[1]===1) return;
+      
     var dimension = this.getDimension();
     var value = d[dimension];
 
     utils.find(this.select, function(d) {
       return d[dimension] === value;
-    }).labelOffset = xy;
+    }).labelOffset = [Math.round(xy[0]*1000)/1000, Math.round(xy[1]*1000)/1000];
 
     //force the model to trigger events even if value is the same
     this.set("select", this.select, true);
