@@ -44,7 +44,6 @@
   },
   "primary_school_completion_percent_of_girls": {
    "name": "Primary school completion (% of girls)",
-   "scales": NaN,
    "use": "indicator"
   },
   "gini": {
@@ -70,7 +69,6 @@
   },
   "math_achievement___8th_grade": {
    "name": "Math achievement - 8th grade",
-   "scales": NaN,
    "use": "indicator"
   },
   "foreign_direct_investment_net_inflows_percent_of_gdp": {
@@ -264,7 +262,6 @@
   },
   "surviving_kids_per_woman": {
    "name": "Surviving kids per woman",
-   "scales": NaN,
    "use": "indicator"
   },
   "total_health_spending_percent_of_gdp": {
@@ -339,7 +336,6 @@
   },
   "energy_from_solid_biofuels_percent": {
    "name": "Energy from solid biofuels (%)",
-   "scales": NaN,
    "use": "indicator"
   },
   "female_long_term_unemployment_rate_percent": {
@@ -442,7 +438,6 @@
   },
   "alternative_gdp_per_capita_ppp__wb": {
    "name": "Alternative GDP per capita PPP, WB",
-   "scales": NaN,
    "use": "indicator"
   },
   "crude_birth_rate_births_per_1000_population": {
@@ -545,7 +540,6 @@
   },
   "newborn_deaths": {
    "name": "Newborn deaths",
-   "scales": NaN,
    "use": "indicator"
   },
   "population_growth_annual_percent": {
@@ -673,7 +667,6 @@
   },
   "energy_supply_per_person_toe": {
    "name": "Energy supply per person TOE",
-   "scales": NaN,
    "use": "indicator"
   },
   "storm___deaths_annual_number": {
@@ -748,7 +741,6 @@
   },
   "medical_doctors_per_1000_people": {
    "name": "Medical Doctors (per 1,000 people)",
-   "scales": NaN,
    "use": "indicator"
   },
   "alcohol_consumption_per_adult_15plus_litres": {
@@ -1040,7 +1032,6 @@
   },
   "gdppercapita_growth_over_next_10_years": {
    "name": "GDP/capita growth over next 10 years",
-   "scales": NaN,
    "use": "indicator"
   },
   "median_age_years": {
@@ -1241,12 +1232,10 @@
   },
   "data_quality___population": {
    "name": "Data quality - Population",
-   "scales": NaN,
    "use": "indicator"
   },
   "gdp_per_capita_yearly_growth": {
    "name": "GDP per capita, yearly growth",
-   "scales": NaN,
    "use": "indicator"
   },
   "roads_paved_percent_of_total_roads": {
@@ -1314,7 +1303,6 @@
   },
   "income_per_person_long_series": {
    "name": "Income per person, long series",
-   "scales": NaN,
    "use": "indicator"
   },
   "electricity_use_per_person": {
@@ -1333,7 +1321,6 @@
   },
   "gdp_total_yearly_growth": {
    "name": "GDP total, yearly growth",
-   "scales": NaN,
    "use": "indicator"
   },
   "sugar_per_person_g_per_day": {
@@ -1345,7 +1332,6 @@
   },
   "residential_energy_use_percent": {
    "name": "Residential energy use (%)",
-   "scales": NaN,
    "use": "indicator"
   },
   "storm___affected_annual_number": {
@@ -1399,7 +1385,6 @@
   },
   "year_categorization_1820_2010": {
    "name": "Year categorization 1820-2010",
-   "scales": NaN,
    "use": "indicator"
   },
   "military_expenditure_percent_of_gdp": {
@@ -1481,7 +1466,6 @@
   },
   "year_categorization_1950_": {
    "name": "Year categorization 1950-",
-   "scales": NaN,
    "use": "indicator"
   },
   "children_out_of_school_primary_female": {
@@ -1669,7 +1653,6 @@
   },
   "alternative_gdp_per_capita_ppp_pwt 7.1": {
    "name": "Alternative GDP per capita PPP, PWT 7.1",
-   "scales": NaN,
    "use": "indicator"
   },
   "personal_computers_total": {
@@ -1874,7 +1857,6 @@
   },
   "life_expectancy_male": {
    "name": "Life expectancy, male",
-   "scales": NaN,
    "use": "indicator"
   },
   "newly_hiv_infected_number_all_ages": {
@@ -2118,7 +2100,6 @@
   },
   "economic_growth_over_the_past_10_years": {
    "name": "Economic growth over the past 10 years",
-   "scales": NaN,
    "use": "indicator"
   },
   "extreme_temperature___affected_annual_number": {
@@ -2200,7 +2181,6 @@
   },
   "data_quality___income_per_person": {
    "name": "Data quality - Income per person",
-   "scales": NaN,
    "use": "indicator"
   },
   "car_deaths_per_100000_people": {
@@ -2352,7 +2332,6 @@
   },
   "data_method___maternal_mortality": {
    "name": "Data method - Maternal mortality",
-   "scales": NaN,
    "use": "indicator"
   },
   "stomach_cancer_new_cases_per_100000_men": {
@@ -2364,7 +2343,6 @@
   },
   "child_mortality_0_5_year_olds_more_years_version_7": {
    "name": "Child mortality (0-5 year-olds). More years. Version 7.",
-   "scales": NaN,
    "use": "indicator"
   },
   "market_value_of_listed_companies_percent_of_gdp": {
@@ -2397,7 +2375,6 @@
   },
   "how_far_to_the_north": {
    "name": "How far to the north",
-   "scales": NaN,
    "use": "indicator"
   },
   "all_causes_deaths_in_children_1_59_months_per_1000_births": {
@@ -2409,7 +2386,6 @@
   },
   "math_achievement___4th_grade": {
    "name": "Math achievement - 4th grade",
-   "scales": NaN,
    "use": "indicator"
   },
   "income_share_of_poorest_20percent": {
@@ -2673,7 +2649,6 @@
   },
   "number_of_child_deaths": {
    "name": "Number of child deaths",
-   "scales": NaN,
    "use": "indicator"
   },
   "net_barter_terms_of_trade_2000__100": {
@@ -2727,7 +2702,6 @@
   },
   "children_per_woman_temporary_update": {
    "name": "Children per woman, temporary update",
-   "scales": NaN,
    "use": "indicator"
   },
   "forest_land_total_area_ha": {
@@ -2767,7 +2741,6 @@
   },
   "primary_school_completion_percent_of_boys": {
    "name": "Primary school completion (% of boys)",
-   "scales": NaN,
    "use": "indicator"
   },
   "nuclear_power_generation_total": {
@@ -2919,7 +2892,6 @@
   },
   "alternative_gdp_per_capita_ppp_pwt_8_0": {
    "name": "Alternative GDP per capita PPP, PWT 8.0",
-   "scales": NaN,
    "use": "indicator"
   },
   "out_of_pocket_share_of_total_health_spending_percent": {
@@ -2980,7 +2952,6 @@
   },
   "dead_kids_per_woman": {
    "name": "Dead kids per woman",
-   "scales": NaN,
    "use": "indicator"
   },
   "mean_years_in_school_women_percent_men_25_to_34_years": {
@@ -3069,7 +3040,6 @@
   },
   "life_expectancy_at_birth_data_from_ihme": {
    "name": "Life expectancy at birth, data from IHME",
-   "scales": NaN,
    "use": "indicator"
   },
   "tsunami___affected_annual_number": {
@@ -3095,7 +3065,6 @@
   },
   "life_expectancy_female": {
    "name": "Life expectancy, female",
-   "scales": NaN,
    "use": "indicator"
   },
   "maternal_deaths_lifetime_risk_per_1000": {
@@ -3121,7 +3090,6 @@
   },
   "number_of_people_in_poverty": {
    "name": "Number of people in poverty",
-   "scales": NaN,
    "use": "indicator"
   },
   "teen_fertility_rate_births_per_1000_women_ages_15_19": {
@@ -3196,7 +3164,6 @@
   },
   "total_population_with_projections": {
    "name": "Total population, with projections",
-   "scales": NaN,
    "use": "indicator"
   },
   "population_aged_60plus_years_total_number": {
@@ -3229,7 +3196,6 @@
   },
   "newborn_mortality_rate_per_1000": {
    "name": "Newborn mortality rate per 1000",
-   "scales": NaN,
    "use": "indicator"
   },
   "liver_cancer_new_cases_per_100000_women": {
@@ -3611,12 +3577,10 @@
   },
   "yearly_co2_emissions_1000_tonnes": {
    "name": "Yearly CO2 emissions (1000 tonnes)",
-   "scales": NaN,
    "use": "indicator"
   },
   "corruption_perception_index_cpi": {
    "name": "Corruption Perception Index (CPI)",
-   "scales": NaN,
    "use": "indicator"
   },
   "cell_phones_total": {
@@ -3747,7 +3711,6 @@
   },
   "population_total": {
    "name": "Population, total",
-   "scales": NaN,
    "use": "indicator"
   },
   "mean_years_in_school_women_of_reproductive_age_15_to_44": {
