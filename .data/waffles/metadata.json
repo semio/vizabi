@@ -1,6 +1,6 @@
 {
  "indicatorsDB": {
-  "math_achievement___4th_grade": {
+  "math_achievement_4th_grade": {
    "use": "indicator",
    "sourcelink": "http://spreadsheets.google.com/pub?key=phAwcNAVuyj3Iw3kqbjJTZQ",
    "domain": [
@@ -237,7 +237,7 @@
     2008
    ]
   },
-  "plane_crash___affected_annual_number": {
+  "plane_crash_affected_annual_number": {
    "scales": [
     "log"
    ],
@@ -342,7 +342,7 @@
     2002
    ]
   },
-  "smoking_men_percent_of_men_over_age_15_": {
+  "smoking_men_percent_of_men_over_age_15": {
    "scales": [
     "linear"
    ],
@@ -387,7 +387,7 @@
     2008
    ]
   },
-  "alternative_gdp_per_capita_ppp__wb": {
+  "alternative_gdp_per_capita_ppp_wb": {
    "use": "indicator",
    "sourcelink": "https://docs.google.com/spreadsheet/pub?key=0ArtujvvFrPjVdERlTHZFQ2ZaUkpySHpQMF82UmdlcUE",
    "domain": [
@@ -666,7 +666,7 @@
     2007
    ]
   },
-  "data_quality___children_per_woman": {
+  "data_quality_children_per_woman": {
    "scales": [
     "linear"
    ],
@@ -681,7 +681,7 @@
     2009
    ]
   },
-  "epidemic___deaths_annual_number": {
+  "epidemic_deaths_annual_number": {
    "scales": [
     "linear"
    ],
@@ -993,7 +993,7 @@
     2009
    ]
   },
-  "debt_servicing_costs_percent_of_exports_and_net_income_from_": {
+  "debt_servicing_costs_percent_of_exports_and_net_income_from_abroad": {
    "scales": [
     "linear"
    ],
@@ -1035,7 +1035,7 @@
     2009
    ]
   },
-  "earthquake___deaths_annual_number": {
+  "earthquake_deaths_annual_number": {
    "scales": [
     "linear"
    ],
@@ -1065,7 +1065,7 @@
     2011
    ]
   },
-  "malaria_deaths_per_100000___reported": {
+  "malaria_deaths_per_100000_reported": {
    "scales": [
     "linear"
    ],
@@ -1346,7 +1346,7 @@
     2011
    ]
   },
-  "storm___affected_annual_number": {
+  "storm_affected_annual_number": {
    "scales": [
     "linear"
    ],
@@ -1361,7 +1361,7 @@
     2008
    ]
   },
-  "epidemic___affected_annual_number": {
+  "epidemic_affected_annual_number": {
    "scales": [
     "linear"
    ],
@@ -1421,7 +1421,7 @@
     2010
    ]
   },
-  "data_quality___life_expectancy": {
+  "data_quality_life_expectancy": {
    "scales": [
     "linear"
    ],
@@ -1436,7 +1436,7 @@
     2014
    ]
   },
-  "all_forms_of_tb_number_of_existing_cases___estimated": {
+  "all_forms_of_tb_number_of_existing_cases_estimated": {
    "scales": [
     "log"
    ],
@@ -1794,7 +1794,7 @@
     2002
    ]
   },
-  "data_quality___income_per_person": {
+  "data_quality_income_per_person": {
    "use": "indicator",
    "sourcelink": "http://spreadsheets.google.com/pub?key=phAwcNAVuyj0atjJIuxy-KQ",
    "domain": [
@@ -1866,7 +1866,7 @@
     2008
    ]
   },
-  "forest_products_removal_per_ha_": {
+  "forest_products_removal_per_ha_dollar": {
    "scales": [
     "linear"
    ],
@@ -1941,7 +1941,7 @@
     2010
    ]
   },
-  "tb_with_hivplus_existing_cases_per_100000___estimated": {
+  "tb_with_hivplus_existing_cases_per_100000_estimated": {
    "scales": [
     "linear"
    ],
@@ -2023,7 +2023,7 @@
     2002
    ]
   },
-  "flood___deaths_annual_number": {
+  "flood_deaths_annual_number": {
    "scales": [
     "linear"
    ],
@@ -2173,7 +2173,7 @@
     2011
    ]
   },
-  "malaria_cases_per_100000___reported": {
+  "malaria_cases_per_100000_reported": {
    "scales": [
     "linear"
    ],
@@ -2218,7 +2218,7 @@
     2002
    ]
   },
-  "malaria_number_of_cases___reported": {
+  "malaria_number_of_cases_reported": {
    "scales": [
     "linear"
    ],
@@ -2233,7 +2233,7 @@
     2006
    ]
   },
-  "all_forms_of_tb_detection_rate_percent___dots_only": {
+  "all_forms_of_tb_detection_rate_percent_dots_only": {
    "scales": [
     "linear"
    ],
@@ -2331,7 +2331,7 @@
     2010
    ]
   },
-  "all_forms_of_tb_detection_rate_percent_": {
+  "all_forms_of_tb_detection_rate_percent": {
    "scales": [
     "linear"
    ],
@@ -2600,7 +2600,7 @@
     2010
    ]
   },
-  "total_health_spending_per_person_international_": {
+  "total_health_spending_per_person_international_dollar": {
    "scales": [
     "log"
    ],
@@ -2777,7 +2777,7 @@
     2004
    ]
   },
-  "year_categorization_1950_": {
+  "year_categorization_1950": {
    "use": "indicator",
    "sourcelink": "http://spreadsheets.google.com/pub?key=phAwcNAVuyj02SA7cGjnRbA",
    "domain": [
@@ -2965,7 +2965,7 @@
     2002
    ]
   },
-  "tb_with_hivplus_new_cases_per_100000___estimated": {
+  "tb_with_hivplus_new_cases_per_100000_estimated": {
    "scales": [
     "linear"
    ],
@@ -3171,7 +3171,7 @@
     2007
    ]
   },
-  "all_forms_of_tb_number_of_deaths___estimated": {
+  "all_forms_of_tb_number_of_deaths_estimated": {
    "scales": [
     "log"
    ],
@@ -3321,7 +3321,7 @@
     2008
    ]
   },
-  "net_barter_terms_of_trade_2000__100": {
+  "net_barter_terms_of_trade_2000_100": {
    "scales": [
     "linear"
    ],
@@ -3561,7 +3561,7 @@
     2002
    ]
   },
-  "malaria_number_of_deaths___reported": {
+  "malaria_number_of_deaths_reported": {
    "scales": [
     "linear"
    ],
@@ -3681,7 +3681,7 @@
     2007
    ]
   },
-  "all_forms_of_tb_new_cases_per_100000___estimated": {
+  "all_forms_of_tb_new_cases_per_100000_estimated": {
    "scales": [
     "linear"
    ],
@@ -3711,7 +3711,7 @@
     2011
    ]
   },
-  "co2_intensity_of_economic_output_kg_co2_per_2005_ppp__of_gdp": {
+  "co2_intensity_of_economic_output_kg_co2_per_2005_ppp_of_gdp": {
    "scales": [
     "linear"
    ],
@@ -3831,7 +3831,7 @@
     2008
    ]
   },
-  "all_forms_of_tb_number_of_new_cases___estimated": {
+  "all_forms_of_tb_number_of_new_cases_estimated": {
    "scales": [
     "log"
    ],
@@ -4215,7 +4215,7 @@
     2002
    ]
   },
-  "storm___deaths_annual_number": {
+  "storm_deaths_annual_number": {
    "scales": [
     "linear"
    ],
@@ -4625,7 +4625,7 @@
     "linear"
    ],
    "use": "indicator",
-   "sourcelink": "http://spreadsheets.google.com/pub?key=rsOONWhmGBtzb4j__0MJv7Q",
+   "sourcelink": "http://spreadsheets.google.com/pub?key=rsOONWhmGBtzb4j_0MJv7Q",
    "domain": [
     3.1,
     21.68
@@ -4650,7 +4650,7 @@
     2005
    ]
   },
-  "data_quality___population": {
+  "data_quality_population": {
    "use": "indicator",
    "sourcelink": "http://spreadsheets.google.com/pub?key=phAwcNAVuyj1ONZlWMf9KQA",
    "domain": [
@@ -4662,7 +4662,7 @@
     2001
    ]
   },
-  "infectious_tb_number_of_new_cases___estimated": {
+  "infectious_tb_number_of_new_cases_estimated": {
    "scales": [
     "log"
    ],
@@ -4682,7 +4682,7 @@
     "log"
    ],
    "use": "indicator",
-   "sourcelink": "http://spreadsheets.google.com/pub?key=pp59adS3CHWeECA6Gf__BNQ",
+   "sourcelink": "http://spreadsheets.google.com/pub?key=pp59adS3CHWeECA6Gf_BNQ",
    "domain": [
     1000.0,
     460500000.0
@@ -4692,7 +4692,7 @@
     2005
    ]
   },
-  "infectious_tb_new_cases_per_100000___estimated": {
+  "infectious_tb_new_cases_per_100000_estimated": {
    "scales": [
     "linear"
    ],
@@ -4797,7 +4797,7 @@
     2008
    ]
   },
-  "tb_with_hivplus_number_of_new_cases___estimated": {
+  "tb_with_hivplus_number_of_new_cases_estimated": {
    "scales": [
     "log"
    ],
@@ -4922,7 +4922,7 @@
     "linear"
    ],
    "use": "indicator",
-   "sourcelink": "http://spreadsheets.google.com/pub?key=rZrHzR__kZfmw6L_xUx7cwg",
+   "sourcelink": "http://spreadsheets.google.com/pub?key=rZrHzR_kZfmw6L_xUx7cwg",
    "domain": [
     -14.49,
     17.17
@@ -4932,7 +4932,7 @@
     2048
    ]
   },
-  "earthquake___affected_annual_number": {
+  "earthquake_affected_annual_number": {
    "scales": [
     "linear"
    ],
@@ -4992,7 +4992,7 @@
     2004
    ]
   },
-  "extreme_temperature___deaths_annual_number": {
+  "extreme_temperature_deaths_annual_number": {
    "scales": [
     "linear"
    ],
@@ -5022,7 +5022,7 @@
     2008
    ]
   },
-  "all_forms_of_tb_number_of_new_cases___reported": {
+  "all_forms_of_tb_number_of_new_cases_reported": {
    "scales": [
     "log"
    ],
@@ -5064,12 +5064,12 @@
     2002
    ]
   },
-  "government_health_spending_per_person_international_": {
+  "government_health_spending_per_person_international_dollar": {
    "scales": [
     "log"
    ],
    "use": "indicator",
-   "sourcelink": "http://spreadsheets.google.com/pub?key=tZ3uHUdw0H__Siyj78GXsGg",
+   "sourcelink": "http://spreadsheets.google.com/pub?key=tZ3uHUdw0H_Siyj78GXsGg",
    "domain": [
     0.12,
     5692.0
@@ -5248,7 +5248,7 @@
     2010
    ]
   },
-  "all_forms_of_tb_new_cases_per_100000___reported": {
+  "all_forms_of_tb_new_cases_per_100000_reported": {
    "scales": [
     "linear"
    ],
@@ -5263,12 +5263,12 @@
     2007
    ]
   },
-  "plane_crash___deaths_annual_number": {
+  "plane_crash_deaths_annual_number": {
    "scales": [
     "linear"
    ],
    "use": "indicator",
-   "sourcelink": "http://spreadsheets.google.com/pub?key=rSv5aMDwESiKg-yA__-tRFg",
+   "sourcelink": "http://spreadsheets.google.com/pub?key=rSv5aMDwESiKg-yA_-tRFg",
    "domain": [
     0.0,
     520.0
@@ -5584,7 +5584,7 @@
     2004
    ]
   },
-  "drought___deaths_annual_number": {
+  "drought_deaths_annual_number": {
    "scales": [
     "linear"
    ],
@@ -5599,7 +5599,7 @@
     2008
    ]
   },
-  "tsunami___affected_annual_number": {
+  "tsunami_affected_annual_number": {
    "scales": [
     "linear"
    ],
@@ -5701,7 +5701,7 @@
     2004
    ]
   },
-  "forest_products_removal_total_": {
+  "forest_products_removal_total_dollar": {
    "scales": [
     "log"
    ],
@@ -5761,7 +5761,7 @@
     2008
    ]
   },
-  "alternative_gdp_per_capita_ppp_pwt 7.1": {
+  "alternative_gdp_per_capita_ppp_pwt_7_1": {
    "use": "indicator",
    "sourcelink": "https://docs.google.com/spreadsheet/pub?key=0ArtujvvFrPjVdEhhbV90QlJ3RFM0TW83dHd6RXBiX3c",
    "domain": [
@@ -5818,7 +5818,7 @@
     2002
    ]
   },
-  "tb_with_hivplus_number_of_existing_cases___estimated": {
+  "tb_with_hivplus_number_of_existing_cases_estimated": {
    "scales": [
     "log"
    ],
@@ -6130,7 +6130,7 @@
     2012
    ]
   },
-  "all_forms_of_tb_deaths_per_100000___estimated": {
+  "all_forms_of_tb_deaths_per_100000_estimated": {
    "scales": [
     "linear"
    ],
@@ -6537,7 +6537,7 @@
     2011
    ]
   },
-  "math_achievement___8th_grade": {
+  "math_achievement_8th_grade": {
    "use": "indicator",
    "sourcelink": "http://spreadsheets.google.com/pub?key=phAwcNAVuyj3fwfA8XA25Eg",
    "domain": [
@@ -6735,7 +6735,7 @@
     2015
    ]
   },
-  "tb_with_hivplus_deaths_per_100000___estimated": {
+  "tb_with_hivplus_deaths_per_100000_estimated": {
    "scales": [
     "linear"
    ],
@@ -6787,7 +6787,7 @@
     2007
    ]
   },
-  "flood___affected_annual_number": {
+  "flood_affected_annual_number": {
    "scales": [
     "linear"
    ],
@@ -6844,7 +6844,7 @@
     2050
    ]
   },
-  "drought___affected_annual_number": {
+  "drought_affected_annual_number": {
    "scales": [
     "linear"
    ],
@@ -6889,7 +6889,7 @@
     2050
    ]
   },
-  "infectious_tb_number_of_new_cases___reported": {
+  "infectious_tb_number_of_new_cases_reported": {
    "scales": [
     "log"
    ],
@@ -7054,7 +7054,7 @@
     2010
    ]
   },
-  "tsunami___deaths_annual_number": {
+  "tsunami_deaths_annual_number": {
    "scales": [
     "linear"
    ],
@@ -7159,7 +7159,7 @@
     2050
    ]
   },
-  "infectious_tb_new_cases_per_100000___reported": {
+  "infectious_tb_new_cases_per_100000_reported": {
    "scales": [
     "linear"
    ],
@@ -7189,7 +7189,7 @@
     2008
    ]
   },
-  "data_method___maternal_mortality": {
+  "data_method_maternal_mortality": {
    "use": "indicator",
    "sourcelink": "http://spreadsheets.google.com/pub?key=thDxsgSWvLGW4M1qUBby7OQ",
    "domain": [
@@ -7462,7 +7462,7 @@
     2002
    ]
   },
-  "infectious_tb_detection_rate_percent___dots_only": {
+  "infectious_tb_detection_rate_percent_dots_only": {
    "scales": [
     "linear"
    ],
@@ -7564,7 +7564,7 @@
     2099
    ]
   },
-  "smoking_women_percent_of_women_over_age_15_": {
+  "smoking_women_percent_of_women_over_age_15": {
    "scales": [
     "linear"
    ],
@@ -7796,7 +7796,7 @@
     2050
    ]
   },
-  "extreme_temperature___affected_annual_number": {
+  "extreme_temperature_affected_annual_number": {
    "scales": [
     "linear"
    ],
@@ -7893,7 +7893,7 @@
     2010
    ]
   },
-  "tb_with_hivplus_number_of_deaths___estimated": {
+  "tb_with_hivplus_number_of_deaths_estimated": {
    "scales": [
     "log"
    ],
@@ -7938,7 +7938,7 @@
     2010
    ]
   },
-  "all_forms_of_tb_existing_cases_per_100000___estimated": {
+  "all_forms_of_tb_existing_cases_per_100000_estimated": {
    "scales": [
     "linear"
    ],
@@ -8610,10 +8610,10 @@
         "id": "government_health_spending_of_total_gov_spending_percent"
        },
        {
-        "id": "total_health_spending_per_person_international_"
+        "id": "total_health_spending_per_person_international_dollar"
        },
        {
-        "id": "government_health_spending_per_person_international_"
+        "id": "government_health_spending_per_person_international_dollar"
        },
        {
         "id": "total_health_spending_per_person_us"
@@ -8670,16 +8670,16 @@
       "id": "malaria",
       "children": [
        {
-        "id": "malaria_cases_per_100000___reported"
+        "id": "malaria_cases_per_100000_reported"
        },
        {
-        "id": "malaria_deaths_per_100000___reported"
+        "id": "malaria_deaths_per_100000_reported"
        },
        {
-        "id": "malaria_number_of_cases___reported"
+        "id": "malaria_number_of_cases_reported"
        },
        {
-        "id": "malaria_number_of_deaths___reported"
+        "id": "malaria_number_of_deaths_reported"
        }
       ]
      },
@@ -8755,10 +8755,10 @@
         "id": "smoking_adults_percent_of_population_over_age_15"
        },
        {
-        "id": "smoking_women_percent_of_women_over_age_15_"
+        "id": "smoking_women_percent_of_women_over_age_15"
        },
        {
-        "id": "smoking_men_percent_of_men_over_age_15_"
+        "id": "smoking_men_percent_of_men_over_age_15"
        },
        {
         "id": "body_mass_index_bmi_men_kgperm2"
@@ -8784,22 +8784,22 @@
       "id": "tb_tuberculosis",
       "children": [
        {
-        "id": "infectious_tb_new_cases_per_100000___estimated"
+        "id": "infectious_tb_new_cases_per_100000_estimated"
        },
        {
-        "id": "infectious_tb_new_cases_per_100000___reported"
+        "id": "infectious_tb_new_cases_per_100000_reported"
        },
        {
-        "id": "infectious_tb_number_of_new_cases___estimated"
+        "id": "infectious_tb_number_of_new_cases_estimated"
        },
        {
-        "id": "infectious_tb_number_of_new_cases___reported"
+        "id": "infectious_tb_number_of_new_cases_reported"
        },
        {
         "id": "infectious_tb_detection_rate_percent"
        },
        {
-        "id": "infectious_tb_detection_rate_percent___dots_only"
+        "id": "infectious_tb_detection_rate_percent_dots_only"
        },
        {
         "id": "infectious_tb_treatment_dots_completed_percent"
@@ -8808,52 +8808,52 @@
         "id": "tb_programme_dots_population_coverage_percent"
        },
        {
-        "id": "all_forms_of_tb_new_cases_per_100000___estimated"
+        "id": "all_forms_of_tb_new_cases_per_100000_estimated"
        },
        {
-        "id": "all_forms_of_tb_existing_cases_per_100000___estimated"
+        "id": "all_forms_of_tb_existing_cases_per_100000_estimated"
        },
        {
-        "id": "all_forms_of_tb_deaths_per_100000___estimated"
+        "id": "all_forms_of_tb_deaths_per_100000_estimated"
        },
        {
-        "id": "all_forms_of_tb_new_cases_per_100000___reported"
+        "id": "all_forms_of_tb_new_cases_per_100000_reported"
        },
        {
-        "id": "all_forms_of_tb_number_of_new_cases___estimated"
+        "id": "all_forms_of_tb_number_of_new_cases_estimated"
        },
        {
-        "id": "all_forms_of_tb_number_of_existing_cases___estimated"
+        "id": "all_forms_of_tb_number_of_existing_cases_estimated"
        },
        {
-        "id": "all_forms_of_tb_number_of_deaths___estimated"
+        "id": "all_forms_of_tb_number_of_deaths_estimated"
        },
        {
-        "id": "all_forms_of_tb_number_of_new_cases___reported"
+        "id": "all_forms_of_tb_number_of_new_cases_reported"
        },
        {
-        "id": "all_forms_of_tb_detection_rate_percent_"
+        "id": "all_forms_of_tb_detection_rate_percent"
        },
        {
-        "id": "all_forms_of_tb_detection_rate_percent___dots_only"
+        "id": "all_forms_of_tb_detection_rate_percent_dots_only"
        },
        {
-        "id": "tb_with_hivplus_new_cases_per_100000___estimated"
+        "id": "tb_with_hivplus_new_cases_per_100000_estimated"
        },
        {
-        "id": "tb_with_hivplus_existing_cases_per_100000___estimated"
+        "id": "tb_with_hivplus_existing_cases_per_100000_estimated"
        },
        {
-        "id": "tb_with_hivplus_deaths_per_100000___estimated"
+        "id": "tb_with_hivplus_deaths_per_100000_estimated"
        },
        {
-        "id": "tb_with_hivplus_number_of_new_cases___estimated"
+        "id": "tb_with_hivplus_number_of_new_cases_estimated"
        },
        {
-        "id": "tb_with_hivplus_number_of_existing_cases___estimated"
+        "id": "tb_with_hivplus_number_of_existing_cases_estimated"
        },
        {
-        "id": "tb_with_hivplus_number_of_deaths___estimated"
+        "id": "tb_with_hivplus_number_of_deaths_estimated"
        }
       ]
      },
@@ -8919,10 +8919,10 @@
       "id": "achievement",
       "children": [
        {
-        "id": "math_achievement___4th_grade"
+        "id": "math_achievement_4th_grade"
        },
        {
-        "id": "math_achievement___8th_grade"
+        "id": "math_achievement_8th_grade"
        }
       ]
      },
@@ -9032,7 +9032,7 @@
       "id": "advanced_debt_trade",
       "children": [
        {
-        "id": "debt_servicing_costs_percent_of_exports_and_net_income_from_"
+        "id": "debt_servicing_costs_percent_of_exports_and_net_income_from_abroad"
        },
        {
         "id": "external_debt_total_us_not_inflation_adjusted"
@@ -9047,7 +9047,7 @@
         "id": "imports_unit_value_index_2000100"
        },
        {
-        "id": "net_barter_terms_of_trade_2000__100"
+        "id": "net_barter_terms_of_trade_2000_100"
        }
       ]
      },
@@ -9109,10 +9109,10 @@
         "id": "subsistence_incomes_per_person"
        },
        {
-        "id": "alternative_gdp_per_capita_ppp__wb"
+        "id": "alternative_gdp_per_capita_ppp_wb"
        },
        {
-        "id": "alternative_gdp_per_capita_ppp_pwt 7.1"
+        "id": "alternative_gdp_per_capita_ppp_pwt_7_1"
        },
        {
         "id": "alternative_gdp_per_capita_ppp_pwt_8_0"
@@ -9137,22 +9137,22 @@
       "id": "data_quality_use_as_color",
       "children": [
        {
-        "id": "data_quality___income_per_person"
+        "id": "data_quality_income_per_person"
        },
        {
-        "id": "data_quality___life_expectancy"
+        "id": "data_quality_life_expectancy"
        },
        {
-        "id": "data_quality___population"
+        "id": "data_quality_population"
        },
        {
         "id": "estimate_or_projection_of_under_five_mortality_rate_from_ihme"
        },
        {
-        "id": "data_quality___children_per_woman"
+        "id": "data_quality_children_per_woman"
        },
        {
-        "id": "data_method___maternal_mortality"
+        "id": "data_method_maternal_mortality"
        }
       ]
      },
@@ -9274,7 +9274,7 @@
         "id": "year_categorization_1820_2010"
        },
        {
-        "id": "year_categorization_1950_"
+        "id": "year_categorization_1950"
        }
       ]
      }
@@ -9854,52 +9854,52 @@
       "id": "disasters",
       "children": [
        {
-        "id": "drought___deaths_annual_number"
+        "id": "drought_deaths_annual_number"
        },
        {
-        "id": "earthquake___deaths_annual_number"
+        "id": "earthquake_deaths_annual_number"
        },
        {
-        "id": "epidemic___deaths_annual_number"
+        "id": "epidemic_deaths_annual_number"
        },
        {
-        "id": "extreme_temperature___deaths_annual_number"
+        "id": "extreme_temperature_deaths_annual_number"
        },
        {
-        "id": "flood___deaths_annual_number"
+        "id": "flood_deaths_annual_number"
        },
        {
-        "id": "storm___deaths_annual_number"
+        "id": "storm_deaths_annual_number"
        },
        {
-        "id": "tsunami___deaths_annual_number"
+        "id": "tsunami_deaths_annual_number"
        },
        {
-        "id": "plane_crash___deaths_annual_number"
+        "id": "plane_crash_deaths_annual_number"
        },
        {
-        "id": "drought___affected_annual_number"
+        "id": "drought_affected_annual_number"
        },
        {
-        "id": "earthquake___affected_annual_number"
+        "id": "earthquake_affected_annual_number"
        },
        {
-        "id": "epidemic___affected_annual_number"
+        "id": "epidemic_affected_annual_number"
        },
        {
-        "id": "extreme_temperature___affected_annual_number"
+        "id": "extreme_temperature_affected_annual_number"
        },
        {
-        "id": "flood___affected_annual_number"
+        "id": "flood_affected_annual_number"
        },
        {
-        "id": "storm___affected_annual_number"
+        "id": "storm_affected_annual_number"
        },
        {
-        "id": "tsunami___affected_annual_number"
+        "id": "tsunami_affected_annual_number"
        },
        {
-        "id": "plane_crash___affected_annual_number"
+        "id": "plane_crash_affected_annual_number"
        }
       ]
      },
@@ -9907,7 +9907,7 @@
       "id": "emissions",
       "children": [
        {
-        "id": "co2_intensity_of_economic_output_kg_co2_per_2005_ppp__of_gdp"
+        "id": "co2_intensity_of_economic_output_kg_co2_per_2005_ppp_of_gdp"
        },
        {
         "id": "cumulative_co2_emissions_tonnes"
@@ -9951,10 +9951,10 @@
         "id": "privately_owned_other_wooded_land_percent"
        },
        {
-        "id": "forest_products_removal_total_"
+        "id": "forest_products_removal_total_dollar"
        },
        {
-        "id": "forest_products_removal_per_ha_"
+        "id": "forest_products_removal_per_ha_dollar"
        }
       ]
      },
